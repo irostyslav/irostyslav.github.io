@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>My website</title>
+    <link>http://localhost:1313/</link>
+    <description>Recent content on My website</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 16 May 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Probabilistic to-visit Queue</title>
+      <link>http://localhost:1313/posts/prob-queue/</link>
+      <pubDate>Thu, 16 May 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/prob-queue/</guid>
+      <description>A probabilistic collection leveraging Bloom Filters to store a set of 1 billion visited URLs in 18mb.</description>
+    </item>
+    <item>
+      <title>Search Engine in Rust</title>
+      <link>http://localhost:1313/posts/search-engine/</link>
+      <pubDate>Thu, 01 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/search-engine/</guid>
+      <description>A search engine overview and Rust implementation, supporting free and boolean ranked queries, efficient disk and memory usage, and spelling correction.</description>
+    </item>
+    <item>
+      <title>Log-Structured Merge Tree</title>
+      <link>http://localhost:1313/posts/lsm/</link>
+      <pubDate>Sun, 12 Nov 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/lsm/</guid>
+      <description>An LSM Tree overview and Java implementation, with a Skiplist, SStables, and background compaction from scratch.</description>
+    </item>
+    <item>
+      <title>About</title>
+      <link>http://localhost:1313/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/about/</guid>
+      <description>&lt;p&gt;Hi all, I’m a software engineer currently working on search infrastructure at Apple in Zurich. Before that, I was at Amazon’s Berlin office.&lt;/p&gt;&#xA;&lt;p&gt;I hold a Bachelor’s degree from the &lt;a href=&#34;https://www.unitn.it/&#34;&gt;University of Trento&lt;/a&gt; and a Master’s degree from the &lt;a href=&#34;https://www.unimi.it/&#34;&gt;University of Milan&lt;/a&gt;. During my studies, I developed a strong interest in algorithms, data structures, distributed systems, databases, and search engines. I explored these areas through my Master’s thesis on &lt;a href=&#34;https://github.com/tomfran/ANS-Graph-compression&#34;&gt;graph compression&lt;/a&gt; and through side projects, including implementations of an &lt;a href=&#34;https://github.com/tomfran/LSM-Tree&#34;&gt;LSM tree&lt;/a&gt; and a &lt;a href=&#34;https://github.com/tomfran/search-rs&#34;&gt;search engine&lt;/a&gt;.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Library</title>
+      <link>http://localhost:1313/library/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/library/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://dataintensive.net/&#34;&gt;Designing Data-Intensive Applications&lt;/a&gt; &lt;br&gt;&#xA;Excellent book about many distributed systems concepts, databases, and big data processing ideas.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://nlp.stanford.edu/IR-book/information-retrieval-book.html&#34;&gt;Introduction to information retrieval&lt;/a&gt; &lt;br&gt;&#xA;How search engines work, how they are built and maintained. Also covers web crawling.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://aipoweredsearch.com/&#34;&gt;AI-Powered Search&lt;/a&gt; &lt;br&gt;&#xA;Building AI-enhanced modern search engines, covering semantic search, learn to rank, LLM summaries, etc.&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.databass.dev/&#34;&gt;Database Internals&lt;/a&gt; &lt;br&gt;&#xA;Deep dive into database concepts that the first book only touches briefly, like data organization on disk, log-structured databases, and so on. It also covers distributed systems.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

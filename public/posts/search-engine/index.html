@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en-us"
+  dir="ltr">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+<link rel="icon" type="image/ico" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="http://localhost:1313/android-chrome-192x192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="http://localhost:1313/apple-touch-icon.png">
+
+<meta name="description" content="A search engine overview and Rust implementation, covering text pre-processing, indexing, query resolution, and index compression."/>
+
+
+
+<title>
+    
+    Search Engine in Rust | My website
+    
+</title>
+
+<link rel="canonical" href="http://localhost:1313/posts/search-engine/"/>
+
+<meta property="og:url" content="http://localhost:1313/posts/search-engine/">
+  <meta property="og:site_name" content="My website">
+  <meta property="og:title" content="Search Engine in Rust">
+  <meta property="og:description" content="A search engine overview and Rust implementation, covering text pre-processing, indexing, query resolution, and index compression.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-02-01T00:00:00+00:00">
+    <meta property="article:modified_time" content="2024-02-01T00:00:00+00:00">
+    <meta property="article:tag" content="Information-Retrieval">
+    <meta property="article:tag" content="Rust">
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/assets/combined.min.92c3bf7119b98cfdc79e93f36a451eb901d8bbbfed7d75814e6436cf6c9085dc.css" media="all">
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+</head>
+
+
+
+
+
+
+
+<body class="auto">
+
+  <div class="content">
+    <header>
+      
+
+<div class="header">
+
+    
+
+    <h1 class="header-title">
+        <a href="http://localhost:1313/">My website</a>
+    </h1>
+
+    <div class="header-menu">
+        
+
+        
+        
+
+        <p
+            class="small ">
+            <a href="/" >
+                /home
+            </a>
+        </p>
+        
+
+        <p
+            class="small ">
+            <a href="/posts" >
+                /posts
+            </a>
+        </p>
+        
+
+        <p
+            class="small ">
+            <a href="/about" >
+                /about
+            </a>
+        </p>
+        
+        
+    </div>
+
+    
+
+</div>
+
+    </header>
+
+    <main class="main">
+      
+
+
+
+
+<div class="breadcrumbs"><a href="/">Home</a><span class="breadcrumbs-separator">/</span><a href="/posts/">Posts</a><span class="breadcrumbs-separator">/</span>
+        <a href="/posts/search-engine/">Search Engine in Rust</a></div>
+
+
+<div  class="autonumber" >
+  <article>
+    <header class="single-intro-container">
+        
+        <h1 class="single-title">Search Engine in Rust</h1>
+        <p class="single-summary">A search engine overview and Rust implementation, supporting free and boolean ranked queries, efficient disk and memory usage, and spelling correction.</p>
+        
+        <div class="single-subsummary">
+          
+          <div>
+            
+            <p class="single-date">
+              <time datetime="2024-02-01T00:00:00&#43;00:00">February 1, 2024</time>
+              &nbsp; · &nbsp;12 min read
+            </p>
+          </div>
+        </div>
+        
+    </header>
+      <aside class="toc">
+        <p><strong>Table of contents</strong></p>
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#what-is-an-inverted-index">What is an Inverted-Index</a>
+      <ul>
+        <li><a href="#example">Example</a></li>
+        <li><a href="#extracting-words-from-documents">Extracting words from documents</a></li>
+      </ul>
+    </li>
+    <li><a href="#answering-queries">Answering queries</a>
+      <ul>
+        <li><a href="#query-pre-processing">Query pre-processing</a></li>
+        <li><a href="#boolean-queries">Boolean Queries</a></li>
+        <li><a href="#free-text-queries">Free-text queries</a></li>
+        <li><a href="#spelling-correction">Spelling correction</a></li>
+      </ul>
+    </li>
+    <li><a href="#writing-data-on-disk">Writing data on disk</a>
+      <ul>
+        <li><a href="#exploiting-small-integers">Exploiting small integers</a></li>
+        <li><a href="#using-words-prefixes">Using words prefixes</a></li>
+        <li><a href="#final-representation">Final representation</a></li>
+        <li><a href="#implementation-details">Implementation details</a></li>
+      </ul>
+    </li>
+    <li><a href="#web-client">Web client</a></li>
+    <li><a href="#conclusions">Conclusions</a>
+      <ul>
+        <li><a href="#references">References</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+      </aside>
+    
+    <div class="single-content">
+      <p>I have always been fascinated by search engines and their capabilities:
+finding relevant documents in a pool of millions is certainly an incredible task,
+so I decided to dive deep into this topic. This was the perfect way to start with Rust. </p>
+<p>All the code is available on my <a href="https://github.com/tomfran/search-rs">Github</a>
+profile, feel free to have a look.
+This article is also published on <a href="https://medium.com/@tomfran/building-a-search-engine-in-rust-c945b6e638f8">Medium</a>.</p>
+<h2 class="heading" id="what-is-an-inverted-index">
+  What is an Inverted-Index
+  <a class="anchor" href="#what-is-an-inverted-index">#</a>
+</h2>
+<p>The foundation of a search engine is an inverted index.
+The idea is to have a dictionary of terms, usually called <strong>vocabulary</strong>,
+and for each word a list of documents where it appears. This list can contain
+additional information, such as document frequency or positions.
+Those elements are usually called <strong>postings</strong>, hence those lists are <strong>postings lists</strong>.</p>
+<h3 class="heading" id="example">
+  Example
+  <a class="anchor" href="#example">#</a>
+</h3>
+<p>Starting from two documents:</p>
+<ol>
+<li>I did enact Julius Caesar: I was killed i&rsquo; the Capitol; Brutus killed me.</li>
+<li>So let it be with Caesar. The noble Brutus hath told you Caesar was ambitious.</li>
+</ol>
+<p>We obtain an index as such, for the sake of the example only doc ids are shown in the postings lists:</p>
+<p>$$
+\begin{align*}
+\text{ambitious} &amp; \longrightarrow [2] \\
+\text{be} &amp; \longrightarrow [2] \\
+\text{brutus} &amp; \longrightarrow [1, 2] \\
+\text{caesar} &amp; \longrightarrow [1, 2] \\
+\text{capitol} &amp; \longrightarrow [1] \\
+\text{did} &amp; \longrightarrow [1] \\
+\text{enact} &amp; \longrightarrow [1] \\
+\text{hath} &amp; \longrightarrow [2] \\
+\text{i&rsquo;} &amp; \longrightarrow [1] \\
+\text{it} &amp; \longrightarrow [2] \\
+\text{julius} &amp; \longrightarrow [1] \\
+\text{killed} &amp; \longrightarrow [1] \\
+\text{let} &amp; \longrightarrow [2] \\
+\text{me} &amp; \longrightarrow [1] \\
+\text{noble} &amp; \longrightarrow [2] \\
+\text{so} &amp; \longrightarrow [2] \\
+\text{the} &amp; \longrightarrow [1, 2] \\
+\text{told} &amp; \longrightarrow [2] \\
+\text{was} &amp; \longrightarrow [1, 2] \\
+\text{with} &amp; \longrightarrow [2] \\
+\text{you} &amp; \longrightarrow [2]
+\end{align*}
+$$</p>
+<h3 class="heading" id="extracting-words-from-documents">
+  Extracting words from documents
+  <a class="anchor" href="#extracting-words-from-documents">#</a>
+</h3>
+<p>In the above example, we divided the documents into words by first removing all punctuation, lowering the text, and finally splitting words in whitespace. This is an example of <strong>tokenization</strong>.</p>
+<p>There exist various techniques and one can be far more sophisticated with this task, for instance, whitespace splitting could lead to problems with multi-token words, such as <em>San Francisco</em>. For the sake of the project, we apply this simple technique nonetheless.</p>
+<p>After tokenization, one could normalize the tokens. Terms such as <em>house</em> and <em>houses</em> should be counted as one key in the vocabulary, arguably also <em>be</em> and <em>was</em> could be accumulated.</p>
+<p>A simple approach for this task is stemming, the idea is to reduce each word to its base form, for instance, by dropping a final <em>s</em>. A well-known algorithm and the one in use in the project is the <a href="https://tartarus.org/martin/PorterStemmer/">Porter Stemmer</a>.</p>
+<p>Another way of doing this is <strong>lemmatization</strong>, which refers to properly using a vocabulary with morphological analysis.</p>
+<p>Here is an example of the two techniques combined:</p>
+<p>$$\text{So many books, so little time.}$$
+$$\downarrow$$
+$$\text{so}, \text{mani}, \text{book}, \text{so}, \text{littl}, \text{time}$$</p>
+<p>And here is the code example:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#888;font-style:italic">// build regex r&#34;[^a-zA-Z0-9\s]+&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#888;font-style:italic">// and Porter Stemmer
+</span></span></span><span style="display:flex;"><span><span style="color:#888;font-style:italic"></span>
+</span></span><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">tokenize_and_stem</span>(&amp;<span style="font-weight:bold;font-style:italic">self</span>, text: <span style="font-weight:bold;text-decoration:underline">&amp;</span><span style="font-weight:bold;text-decoration:underline">str</span>) -&gt; <span style="font-weight:bold;font-style:italic">Vec</span>&lt;<span style="font-weight:bold;font-style:italic">String</span>&gt; {
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic">self</span>.regex
+</span></span><span style="display:flex;"><span>        .replace_all(text, <span style="color:#666;font-style:italic">&#34; &#34;</span>)
+</span></span><span style="display:flex;"><span>        .split_whitespace()
+</span></span><span style="display:flex;"><span>        .map(<span style="font-weight:bold;text-decoration:underline">str</span>::to_lowercase)
+</span></span><span style="display:flex;"><span>        .map(|t| <span style="font-weight:bold;font-style:italic">self</span>.stemmer.stem(&amp;t).to_string())
+</span></span><span style="display:flex;"><span>        .collect()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 class="heading" id="answering-queries">
+  Answering queries
+  <a class="anchor" href="#answering-queries">#</a>
+</h2>
+<p>The most important feature of a search engine is responding to queries. Websites such as Google made popular free-text queries, where you input a phrase and get documents ranked based on relevance.</p>
+<p>There exist also boolean queries, you might want documents containing both terms hello and world, but not man. This type is certainly more limited than the free ones, but they can be quite useful.</p>
+<h3 class="heading" id="query-pre-processing">
+  Query pre-processing
+  <a class="anchor" href="#query-pre-processing">#</a>
+</h3>
+<p>One key aspect of reliably answering queries is pre-processing. We want to treat user inputs as if they were documents.</p>
+<p>Keeping the stemmer example in mind, if we searched for the query little books without stemming it, we would not find anything, as the term <em>little</em> becomes <em>littl</em>, and <em>books</em> is transformed to <em>book</em>.</p>
+<p>It is therefore really important to maintain <strong>consistency</strong> in documents and query <strong>normalization</strong>.</p>
+<h3 class="heading" id="boolean-queries">
+  Boolean Queries
+  <a class="anchor" href="#boolean-queries">#</a>
+</h3>
+<p>We have built an index where for each term we quickly have documents containing it. Executing a boolean query is nothing more than sorted lists intersections, unions, and negations.</p>
+<p>For instance, given the previous toy index, we can search for
+documents containing both the words <em>let</em> and <em>was</em> as such: </p>
+<p>$$
+\begin{align*}
+\text{let} \land \text{was} &amp;= \text{intersect}([1], [1, 2])\\
+&amp;= [1]
+\end{align*}
+$$</p>
+<p>Similarly, or operation becomes list merge:</p>
+<p>$$
+\begin{align*}
+\text{let} \lor \text{was} &amp;= \text{merge}([1], [1, 2])\\
+&amp;= [1, 2]
+\end{align*}
+$$</p>
+<p>Finally, not builds an inverse of the list:</p>
+<p>$$
+\begin{align*}
+\lnot \; \text{let} &amp;= \text{inverse}([1])\\
+&amp;= [2]
+\end{align*}
+$$</p>
+<p>To make a boolean expression easily parsable, we can transform it in its postfix notation using the
+<a href="https://en.wikipedia.org/wiki/Shunting_yard_algorithm">Shunting yard algorithm</a>,
+and then use a stack to execute it, here is an example:</p>
+<p>$$
+\begin{align*}
+\text{original} &amp;= \text{let} \land \text{was} \lor \lnot \; \text{me} \\\
+\text{postfix} &amp;= \text{let} \; \text{was} \land \text{me} \; \lnot \; \lor
+\end{align*}
+$$</p>
+<h3 class="heading" id="free-text-queries">
+  Free-text queries
+  <a class="anchor" href="#free-text-queries">#</a>
+</h3>
+<p>While boolean queries are certainly powerful, we are used to interacting with search engines via free-text interrogations. Also, we prefer to have results sorted by relevance, instead of receiving the ordered by id as in previous cases.</p>
+<p>Given a free query, we first tokenize and stem it, and then, for each term, retrieve all documents, just like a boolean or query.</p>
+<p><strong>BM25 score</strong></p>
+<p>To obtain the final scoring function, we start with estimating term relevance in each document,
+the function in use here is <a href="https://en.wikipedia.org/wiki/Okapi_BM25">BM25</a>:</p>
+<p>$$\text{BM25}(D, Q) = \sum_{i = 1}^{n} \; \text{IDF}(q_i) \cdot \frac{f(q_i, D) \cdot (k_1 + 1)}{f(q_i, D) + k_1 \cdot \Big (1 - b + b \cdot \frac{|D|}{\text{avgdl}} \Big )}$$</p>
+<p>Where the inverse document frequency is computed as:</p>
+<p>$$\text{IDF}(q_i) = \ln \Bigg ( \frac{N - n(q_i) + 0.5}{n(q_i) + 0.5} + 1 \Bigg )$$</p>
+<p>The terms are:</p>
+<ul>
+<li>$f(q_i, D)$: number of times query term $i$ occurs in document $D$;</li>
+<li>$|D|$: length of the document $D$ in words;</li>
+<li>$\text{avgdl}$: average length of the documents in the collection;</li>
+<li>$k_1$ and $b$ are hyperparameters, we used, $1.2$ and $0.75$ respectively.</li>
+</ul>
+<p>Here is the code example</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> <span style="font-weight:bold;text-decoration:underline">mut</span> scores: <span style="color:#666;font-weight:bold;font-style:italic">HashMap</span>&lt;<span style="font-weight:bold;text-decoration:underline">u32</span>, DocumentScore&gt; = HashMap::new();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> n = <span style="font-weight:bold;font-style:italic">self</span>.documents.get_num_documents() <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span>;
+</span></span><span style="display:flex;"><span><span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> avgdl = <span style="font-weight:bold;font-style:italic">self</span>.documents.get_avg_doc_len();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">for</span> (id, token) <span style="font-weight:bold;text-decoration:underline">in</span> tokens.iter().enumerate() {
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">if</span> <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> <span style="font-weight:bold;font-style:italic">Some</span>(postings) = <span style="font-weight:bold;font-style:italic">self</span>.get_term_postings(token) {
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> nq = <span style="font-weight:bold;font-style:italic">self</span>.vocabulary.get_term_frequency(token).unwrap() <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span>;
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> idf = ((n - nq + 0.5) / (nq + 0.5) + 1.0).ln();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">for</span> doc_posting <span style="font-weight:bold;text-decoration:underline">in</span> &amp;postings {
+</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> fq = doc_posting.document_frequency <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span>;
+</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> dl = <span style="font-weight:bold;font-style:italic">self</span>.documents.get_doc_len(doc_posting.document_id) <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> bm_score = idf * (fq * (<span style="color:#666;font-weight:bold;font-style:italic">BM25_KL</span> + 1.0))
+</span></span><span style="display:flex;"><span>                / (fq + <span style="color:#666;font-weight:bold;font-style:italic">BM25_KL</span> * (1.0 - <span style="color:#666;font-weight:bold;font-style:italic">BM25_B</span> + <span style="color:#666;font-weight:bold;font-style:italic">BM25_B</span> * (dl / avgdl)));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> doc_score = scores.entry(doc_posting.document_id).or_default();
+</span></span><span style="display:flex;"><span>            doc_score.tf_idf += bm_score;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Window score</strong></p>
+<p>After obtaining the BM25 score, we also compute the minimum window in which the query terms appear in a document, setting it at infinite if not all terms appear in the same corpus. For instance, given a query <em>gun control</em>, finding <em>gun and control</em> in a document would result in a size 3 window.</p>
+<p>$$\text{window}(D, Q) = \frac{|Q|}{\text{min. window}(Q, D)}$$</p>
+<p><strong>Final rank function</strong></p>
+<p>The final rank function is then:</p>
+<p>$$\text{score}(D, Q) = \alpha \cdot \text{window}(D, Q) + \beta \cdot \text{BM25}(D, Q)$$</p>
+<p>The window and BM25 scores are <strong>relevance signals</strong>, a production search engine would many more, such as document quality, <a href="https://en.wikipedia.org/wiki/PageRank">PageRank</a> scoring, etc. The weights to combine them could be learned with a machine learning model, trained on a doc-query pair dataset.</p>
+<h3 class="heading" id="spelling-correction">
+  Spelling correction
+  <a class="anchor" href="#spelling-correction">#</a>
+</h3>
+<p>The final aspect we are going to see about queries is spelling correction.
+The idea is to edit user input and replace unknown words with plausible ones.
+To measure words similarity we can use <a href="https://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein distance</a>, also knows as edit distance,
+counting the minimum needed operations to transform a string into another one,
+performing insertion, deletion, and substitutions.</p>
+<p>We can compute it efficiently with dynamic programming, using the following
+definition.</p>
+<p>$$
+\text{lev}(a, b) = \begin{cases}
+|a| &amp; \text{if}\;|b| = 0, \\
+|b| &amp; \text{if}\;|a| = 0, \\
+1 + \text{min} \begin{cases}
+\text{lev}(\text{tail}(a), b) \\
+\text{lev}(a, \text{tail}(b)) \\
+\text{lev}(\text{tail}(a), \text{tail}(b)) \\
+\end{cases} &amp; \text{otherwise} \\
+\end{cases}
+$$</p>
+<p>To avoid running the function on every term in the vocabulary to
+find the one with minimum distance, we can restrict heavily the candidates
+using a <a href="https://en.wikipedia.org/wiki/Trigram_search">trigram index</a> on the terms.</p>
+<p>For instance, given the word <em>hello</em> we search for words containing the
+trigrams <em>hel</em>, <em>ell</em>, and <em>llo</em>. We therefore keep an index
+in-memory where for every trigram occurring in the vocabulary, we
+have references to terms.</p>
+<p>When we find a tie in edit distance, we prefer higher overall frequency.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">get_closest_index</span>(&amp;<span style="font-weight:bold;font-style:italic">self</span>, term: <span style="font-weight:bold;text-decoration:underline">&amp;</span><span style="font-weight:bold;text-decoration:underline">str</span>) -&gt; <span style="font-weight:bold;font-style:italic">Option</span>&lt;<span style="font-weight:bold;text-decoration:underline">usize</span>&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#888;font-style:italic">// &#34;hello&#34; -&gt; &#34;hel&#34;, &#34;ell&#34;, &#34;llo&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#888;font-style:italic"></span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> candidates = (0..term.len() - 2)
+</span></span><span style="display:flex;"><span>        .map(|i| term[i..i + 3].to_string())
+</span></span><span style="display:flex;"><span>        .filter_map(|t| <span style="font-weight:bold;font-style:italic">self</span>.trigram_index.get(&amp;t))
+</span></span><span style="display:flex;"><span>        .flat_map(|v| v.iter());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#888;font-style:italic">// min edit distance, max frequency
+</span></span></span><span style="display:flex;"><span><span style="color:#888;font-style:italic"></span>    candidates
+</span></span><span style="display:flex;"><span>        .min_by_key(|i| {
+</span></span><span style="display:flex;"><span>            (
+</span></span><span style="display:flex;"><span>                <span style="font-weight:bold;font-style:italic">Self</span>::levenshtein_distance(term, &amp;<span style="font-weight:bold;font-style:italic">self</span>.index_to_term[**i]),
+</span></span><span style="display:flex;"><span>                -(<span style="font-weight:bold;font-style:italic">self</span>.frequencies[**i] <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">i32</span>),
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>        .copied()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 class="heading" id="writing-data-on-disk">
+  Writing data on disk
+  <a class="anchor" href="#writing-data-on-disk">#</a>
+</h2>
+<p>To avoid having to recompute the index every time, we store it on disk.
+We need four files:</p>
+<ol>
+<li><em>Postings</em>: it contains all the term-document pairs, with frequency information and term positions;</li>
+<li><em>Offsets</em>: offset for term <em>i</em> in bits in the postings;</li>
+<li><em>Alphas</em>: complete vocabulary with document frequency information;</li>
+<li><em>Docs</em>: info about documents, such as the disk path and length.</li>
+</ol>
+<p><strong>Postings format</strong></p>
+<p>For each term we save a postings list as follows:
+$$\text{n}\;|\;(\text{id}_i, f_i, [p_0, \dots, p_m]), \dots$$</p>
+<p>Where $n$ is the number of documents the term appears in, id is the
+doc id, $f$ is the frequency, and $p_j$ are the positions where
+the term appears in the document $i$.</p>
+<p><strong>Offsets format</strong></p>
+<p>The offset file is a sorted sequence of bits offsets.
+$$\text{n}\;|\;o_0, \dots, o_n$$</p>
+<p><strong>Alphas</strong></p>
+<p>A list of sorted words, with their collection frequency.
+$$\text{n}\;|\;w_0, f_0, \dots, w_n, f_n$$</p>
+<p><strong>Docs</strong></p>
+<p>A list of documents paths, with their length.
+$$\text{n}\;|\;p_0, l_0, \dots, p_n, l_n$$</p>
+<p><strong>Space occupation</strong></p>
+<p>Here is how much memory an index for ~180k documents with 32-bit integers representation takes on disk:</p>
+
+<div class="table-outer">
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th style="text-align: right">Size MB</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Vocabulary</td>
+                <td style="text-align: right">5.4</td>
+            </tr>
+            <tr>
+                <td>Documents</td>
+                <td style="text-align: right">7.2</td>
+            </tr>
+            <tr>
+                <td>Offsets</td>
+                <td style="text-align: right">1.1</td>
+            </tr>
+            <tr>
+                <td>Postings</td>
+                <td style="text-align: right">2200.0</td>
+            </tr>
+        </tbody>
+    </table>
+</div><h3 class="heading" id="exploiting-small-integers">
+  Exploiting small integers
+  <a class="anchor" href="#exploiting-small-integers">#</a>
+</h3>
+<p>We can do way better, exploiting the distribution of the integers we write.
+The postings list document ids are strictly increasing,
+as documents are sorted, hence if we use delta encoding we obtain smaller integers.
+The same goes for term positions and the entire offset file.</p>
+<p>We could therefore store gaps instead of the entire numbers, this creates many small integers,
+hence we can use something
+like <a href="https://en.wikipedia.org/wiki/Elias_gamma_coding">Gamma encoding</a>, which
+uses few bits for small numbers.</p>
+<p>The idea is to take the binary
+representation of an integer and write its length in unary before it.
+For instance, $5$, and its binary representation $101$, will then
+be written as $001$, concatenated with $101$, we can merge the two center ones
+to avoid wasting one bit $00101$. Here are the first integers:</p>
+<p>$$
+\begin{align*}
+1 &amp;\rightarrow  1 \\
+2 &amp;\rightarrow  010 \\
+3 &amp;\rightarrow  011 \\
+4 &amp;\rightarrow  00100 \\
+5 &amp;\rightarrow  00101 \\
+6 &amp;\rightarrow  00110 \\
+7 &amp;\rightarrow  00111 \\
+&amp;\dots
+\end{align*}
+$$</p>
+<p>For generic integers, such as list lengths, we can use <a href="https://nlp.stanford.edu/IR-book/html/htmledition/variable-byte-codes-1.html">VByte encoding</a>. I already mentioned it in my other blog post about <a href="/posts/lsm/#data-layout">LSM-trees</a>, go have a look if you like.
+The idea is similar, we split an integer into 7-bit payloads and use the remaining bit to indicate whether the payload continues or not. Integers would then use one to four bytes, instead of 32 bits every time.</p>
+<h3 class="heading" id="using-words-prefixes">
+  Using words prefixes
+  <a class="anchor" href="#using-words-prefixes">#</a>
+</h3>
+<p>Vocabulary is also sorted, hence we can use prefix compression to store the terms. Take for instance <em>watermelon</em>, <em>waterfall</em>, and <em>waterfront</em>. Instead of writing them as they are, we store the length of the matching prefix with the previous word, followed by the remaining suffix.</p>
+<p>The naïve representation:
+$$\text{watermelon}\;\text{waterfall}\;\text{waterfront}$$</p>
+<p>Then becomes:
+$$0\;\text{watermelon}\;5\;\text{fall}\;6\;\text{ront}$$</p>
+<p>We can apply the same principles with document paths, as they likely share directories.</p>
+<h3 class="heading" id="final-representation">
+  Final representation
+  <a class="anchor" href="#final-representation">#</a>
+</h3>
+<p>After employing prefix compression and delta encoding with VByte and Gamma codes, we save over <strong>~68%</strong> of disk space compared to the naïve representation.</p>
+
+<div class="table-outer">
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th style="text-align: right">Uncompressed (MB)</th>
+                <th style="text-align: right">Compressed (MB)</th>
+                <th style="text-align: right">Saving Ratio (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Vocabulary</td>
+                <td style="text-align: right">5.4</td>
+                <td style="text-align: right">1.3</td>
+                <td style="text-align: right">75.9</td>
+            </tr>
+            <tr>
+                <td>Documents</td>
+                <td style="text-align: right">7.2</td>
+                <td style="text-align: right">2.3</td>
+                <td style="text-align: right">68.1</td>
+            </tr>
+            <tr>
+                <td>Offsets</td>
+                <td style="text-align: right">1.1</td>
+                <td style="text-align: right">0.6</td>
+                <td style="text-align: right">46.5</td>
+            </tr>
+            <tr>
+                <td>Postings</td>
+                <td style="text-align: right">2200.0</td>
+                <td style="text-align: right">724.0</td>
+                <td style="text-align: right">67.1</td>
+            </tr>
+        </tbody>
+    </table>
+</div><h3 class="heading" id="implementation-details">
+  Implementation details
+  <a class="anchor" href="#implementation-details">#</a>
+</h3>
+<p>The project defines a writer and reader to store those codes on disk. Although not trivial to read, the idea is to use a buffered writer and reader to interact with the disk, and a 128-bit long as a temporary buffer on top of it.</p>
+<p>When we want to write a given integer, we first build a binary payload containing its Gamma representation and then append it to the bit buffer via bit manipulation.
+Once the buffer reaches 128 bits, it is flushed to the underlying buffered writer.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">write_gamma</span>(&amp;<span style="font-weight:bold;text-decoration:underline">mut</span> <span style="font-weight:bold;font-style:italic">self</span>, n: <span style="font-weight:bold;text-decoration:underline">u32</span>) -&gt; <span style="font-weight:bold;text-decoration:underline">u64</span> {
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> (gamma, len) = BitsWriter::int_to_gamma(n + 1);
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic">self</span>.write_internal(gamma, len)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">int_to_gamma</span>(n: <span style="font-weight:bold;text-decoration:underline">u32</span>) -&gt; (<span style="font-weight:bold;text-decoration:underline">u128</span>, <span style="font-weight:bold;text-decoration:underline">u32</span>) {
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> msb = 31 - n.leading_zeros();
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> unary: <span style="font-weight:bold;text-decoration:underline">u32</span> = 1 &lt;&lt; msb;
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> gamma: <span style="font-weight:bold;text-decoration:underline">u128</span> = (((n ^ unary) <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u128</span>) &lt;&lt; (msb + 1)) | unary <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u128</span>;
+</span></span><span style="display:flex;"><span>    (gamma, 2 * msb + 1)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">write_internal</span>(&amp;<span style="font-weight:bold;text-decoration:underline">mut</span> <span style="font-weight:bold;font-style:italic">self</span>, payload: <span style="font-weight:bold;text-decoration:underline">u128</span>, len: <span style="font-weight:bold;text-decoration:underline">u32</span>) -&gt; <span style="font-weight:bold;text-decoration:underline">u64</span> {
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> free = 128 - <span style="font-weight:bold;font-style:italic">self</span>.written;
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic">self</span>.buffer |= payload &lt;&lt; <span style="font-weight:bold;font-style:italic">self</span>.written;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">if</span> free &gt; len {
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic">self</span>.written += len;
+</span></span><span style="display:flex;"><span>    } <span style="font-weight:bold;text-decoration:underline">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic">self</span>.update_buffer();
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">if</span> len &gt; free {
+</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;font-style:italic">self</span>.buffer |= payload &gt;&gt; free;
+</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;font-style:italic">self</span>.written += len - free;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    len <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u64</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 class="heading" id="web-client">
+  Web client
+  <a class="anchor" href="#web-client">#</a>
+</h2>
+<p>To have a nicer interaction with the engine I made a simple web interface using
+<a href="https://actix.rs/">Actix</a>, <a href="https://htmx.org/">HTMX</a> and <a href="https://github.com/djc/askama">Askama</a> templates.</p>
+<p>You can load an existing index and query it with free or boolean queries.</p>
+<p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure class=" img-light">
+
+    <div class="img-container" style="--w: 2998; --h: 1630;">
+        <img loading="lazy" alt="client" src="/posts/search-engine/web-l.webp#light" width="2998" height="1630">
+    </div>
+
+    
+    <div class="caption-container">
+        <figcaption> Light mode Web client showing a boolean query </figcaption>
+    </div>
+    
+</figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure class=" img-dark">
+
+    <div class="img-container" style="--w: 2998; --h: 1630;">
+        <img loading="lazy" alt="client" src="/posts/search-engine/web-d.webp#dark" width="2998" height="1630">
+    </div>
+
+    
+    <div class="caption-container">
+        <figcaption> Dark mode Web client showing a boolean query </figcaption>
+    </div>
+    
+</figure>
+</p>
+<h2 class="heading" id="conclusions">
+  Conclusions
+  <a class="anchor" href="#conclusions">#</a>
+</h2>
+<p>Overall, this was a fun project, I saw many new concepts and more importantly, it got me started with Rust. I would appreciate any comment about the source code, as this was my first time with the language.</p>
+<p>Thank you for reading this far, feel free to get in touch for for suggestions or clarifications, if you found this interesting, here is my <a href="/posts/lsm/">previous article</a> about LSM Trees, have a look!</p>
+<p>Have a nice day 😃</p>
+<h3 class="heading" id="references">
+  References
+  <a class="anchor" href="#references">#</a>
+</h3>
+<ul>
+<li><a href="https://nlp.stanford.edu/IR-book/information-retrieval-book.html">Introduction to Information Retrieval</a></li>
+</ul>
+
+    </div>
+  </article>
+
+  
+
+  
+
+  
+  
+
+<div class="single-pagination">
+    <hr />
+
+    <div class="flexnowrap">
+
+        <div class="single-pagination-prev">
+            
+            <div class="single-pagination-container-prev">
+                <div class="single-pagination-text">←</div>
+                <div class="single-pagination-text">
+                    <a href="/posts/lsm/">
+                        Log-Structured Merge Tree
+                    </a>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="single-pagination-next">
+            
+            <div class="single-pagination-container-next">
+                <div class="single-pagination-text">
+                    <a href="/posts/prob-queue/">
+                        Probabilistic to-visit Queue
+                    </a>
+                </div>
+                <div class="single-pagination-text">→</div>
+            </div>
+            
+        </div>
+
+    </div>
+
+    <hr />
+</div>
+
+
+
+  
+
+  
+
+  
+  <div class="back-to-top">
+    <a href="#top">
+      back to top
+    </a>
+  </div>
+  
+
+</div>
+
+
+    </main>
+  </div>
+
+  
+  
+
+
+
+
+
+    
+
+
+
+
+  <footer>
+    
+
+    
+    
+
+
+
+
+
+    
+
+
+
+
+    
+    <p>Powered by
+        <a href="https://gohugo.io/">Hugo</a>
+        and
+        <a href="https://github.com/tomfran/typo">tomfran/typo</a>
+    </p>
+    
+    
+    
+
+
+  </footer>
+
+  
+  <link rel="stylesheet" 
+  href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+  
+<script defer 
+  src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+
+<script defer
+  src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body);"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false }
+      ]
+    });
+  });
+</script>
+  
+</body>
+
+<script src="/js/theme-switch.js"></script>
+<script defer src="/js/copy-code.js"></script>
+</html>

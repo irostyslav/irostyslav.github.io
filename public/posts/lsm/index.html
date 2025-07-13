@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en-us"
+  dir="ltr">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+<link rel="icon" type="image/ico" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="http://localhost:1313/android-chrome-192x192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="http://localhost:1313/apple-touch-icon.png">
+
+<meta name="description" content="A Log Structured Merge Tree overview and implementation using Java, including SSTables, Bloom Filter, and a Skiplist from scratch."/>
+
+
+
+<title>
+    
+    Log-Structured Merge Tree | My website
+    
+</title>
+
+<link rel="canonical" href="http://localhost:1313/posts/lsm/"/>
+
+<meta property="og:url" content="http://localhost:1313/posts/lsm/">
+  <meta property="og:site_name" content="My website">
+  <meta property="og:title" content="Log-Structured Merge Tree">
+  <meta property="og:description" content="A Log Structured Merge Tree overview and implementation using Java, including SSTables, Bloom Filter, and a Skiplist from scratch.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-11-12T00:00:00+00:00">
+    <meta property="article:modified_time" content="2023-11-12T00:00:00+00:00">
+    <meta property="article:tag" content="Database">
+    <meta property="article:tag" content="Java">
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/assets/combined.min.92c3bf7119b98cfdc79e93f36a451eb901d8bbbfed7d75814e6436cf6c9085dc.css" media="all">
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+</head>
+
+
+
+
+
+
+
+<body class="auto">
+
+  <div class="content">
+    <header>
+      
+
+<div class="header">
+
+    
+
+    <h1 class="header-title">
+        <a href="http://localhost:1313/">My website</a>
+    </h1>
+
+    <div class="header-menu">
+        
+
+        
+        
+
+        <p
+            class="small ">
+            <a href="/" >
+                /home
+            </a>
+        </p>
+        
+
+        <p
+            class="small ">
+            <a href="/posts" >
+                /posts
+            </a>
+        </p>
+        
+
+        <p
+            class="small ">
+            <a href="/about" >
+                /about
+            </a>
+        </p>
+        
+        
+    </div>
+
+    
+
+</div>
+
+    </header>
+
+    <main class="main">
+      
+
+
+
+
+<div class="breadcrumbs"><a href="/">Home</a><span class="breadcrumbs-separator">/</span><a href="/posts/">Posts</a><span class="breadcrumbs-separator">/</span>
+        <a href="/posts/lsm/">Log-Structured Merge Tree</a></div>
+
+
+<div  class="autonumber" >
+  <article>
+    <header class="single-intro-container">
+        
+        <h1 class="single-title">Log-Structured Merge Tree</h1>
+        <p class="single-summary">An LSM Tree overview and Java implementation, with a Skiplist, SStables, and background compaction from scratch.</p>
+        
+        <div class="single-subsummary">
+          
+          <div>
+            
+            <p class="single-date">
+              <time datetime="2023-11-12T00:00:00&#43;00:00">November 12, 2023</time>
+              &nbsp; · &nbsp;11 min read
+            </p>
+          </div>
+        </div>
+        
+    </header>
+      <aside class="toc">
+        <p><strong>Table of contents</strong></p>
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#memtable">Memtable</a>
+      <ul>
+        <li><a href="#searching">Searching</a></li>
+        <li><a href="#inserting">Inserting</a></li>
+        <li><a href="#choosing-a-level">Choosing a level</a></li>
+      </ul>
+    </li>
+    <li><a href="#sstable">SSTable</a>
+      <ul>
+        <li><a href="#indexing-and-look-ups">Indexing and Look-Ups</a></li>
+        <li><a href="#bloom-filters">Bloom Filters</a></li>
+        <li><a href="#data-layout">Data layout</a></li>
+      </ul>
+    </li>
+    <li><a href="#putting-it-all-together">Putting it all together</a>
+      <ul>
+        <li><a href="#insertion-and-search">Insertion and Search</a></li>
+        <li><a href="#flushing-the-memtable-to-disk">Flushing the Memtable to disk</a></li>
+        <li><a href="#tables-compaction">Tables compaction</a></li>
+      </ul>
+    </li>
+    <li><a href="#conclusions">Conclusions</a>
+      <ul>
+        <li><a href="#references">References</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+      </aside>
+    
+    <div class="single-content">
+      <p>I studied LSM trees at university and after encountering them twice in
+<a href="https://dataintensive.net/">Designing Data-Intensive Applications</a> and
+<a href="https://www.databass.dev/">Database Internals</a> I decided to implement something in Java.</p>
+<p>The idea behind this project is not to provide the most
+efficient implementation ever, but to experiment with
+storing data on disk, any suggestions are welcome!</p>
+<p>Here&rsquo;s the <a href="https://github.com/tomfran/LSM-Tree/tree/main">Github repo</a> if you want to have a look,
+this article is also published on <a href="https://medium.com/@tomfran/log-structured-merge-tree-a79241c959e3">Medium</a>.</p>
+<h2 class="heading" id="introduction">
+  Introduction
+  <a class="anchor" href="#introduction">#</a>
+</h2>
+<p>An LSM tree is a structure used by NoSQL databases, such as
+Cassandra, RocksDB, LevelDB, Dynamo, and so on. It&rsquo;s suitable for write-intensive applications.</p>
+<p>We can distinguish two key components of the tree, the
+in-memory buffer, also called Memtable, and the disk-resident tables. The main
+idea is to accept writes to the in-memory part of the tree, and to flush them
+periodically, or when a certain size is met.</p>
+<p>A key aspect of this structure is ordering, indeed, keys are sorted both in RAM and
+on disk, enabling logarithmic searches.</p>
+<p>For the sake of this project elements in the tree are simple key-value pairs.</p>
+<h2 class="heading" id="memtable">
+  Memtable
+  <a class="anchor" href="#memtable">#</a>
+</h2>
+<p>Having sorted elements in memory is not a new problem we can exploit any
+efficient order-preserving data structure for this part, such as
+<a href="https://en.wikipedia.org/wiki/Red%E2%80%93black_tree">Red-Black</a> or
+<a href="https://en.wikipedia.org/wiki/Red%E2%80%93black_tree">AVL</a> trees.</p>
+<p>In this particular implementation, I decided to build a <a href="https://en.wikipedia.org/wiki/Skip_list">Skip List</a>,
+which provides the same theoretical complexity in the average case of balanced trees, but is straightforward to implement. <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<p>A Skip List is a multi-leveled linked list. The idea is to have fast lanes between nodes, and, by
+carefully constructing them, we can reduce the number of links we need to traverse while searching.</p>
+<p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure class=" img-light">
+
+    <div class="img-container" style="--w: 1488; --h: 496;">
+        <img loading="lazy" alt="skiplist" src="/posts/lsm/skiplist-l.webp#light" width="1488" height="496">
+    </div>
+
+    
+</figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure class=" img-dark">
+
+    <div class="img-container" style="--w: 1488; --h: 496;">
+        <img loading="lazy" alt="skiplist" src="/posts/lsm/skiplist-d.webp#dark" width="1488" height="496">
+    </div>
+
+    
+</figure>
+</p>
+<p>The list properties are:</p>
+<ul>
+<li>elements at level zero are sorted;</li>
+<li>the number of levels are $\log(n)$, where $n$ is the size of the list;</li>
+<li>if a node is at level $i$, then is must also be at level $i-1$.</li>
+</ul>
+<h3 class="heading" id="searching">
+  Searching
+  <a class="anchor" href="#searching">#</a>
+</h3>
+<p>Given the above properties, searching is done as follows:</p>
+<ul>
+<li>start at the highest level and traverse until the node key is less than the wanted key;</li>
+<li>if the successor surpasses the wanted key, go down a level and repeat, else we found the element.
+Eventually, we&rsquo;ll reach level zero, and determine if the element is found or not.</li>
+</ul>
+<h3 class="heading" id="inserting">
+  Inserting
+  <a class="anchor" href="#inserting">#</a>
+</h3>
+<p>Insertion proceeds as follows:</p>
+<ul>
+<li>locate the insert position with the same logic as before;</li>
+<li>determine a level for the new element;</li>
+<li>insert as in a linked list, but at each required level. Note that for this to work we need to
+keep track of a predecessor buffer while descending levels. This way we can correctly replace successors pointers at each level.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="font-weight:bold;font-style:italic;text-decoration:underline">public</span> <span style="font-weight:bold;text-decoration:underline">void</span> <span style="color:#666;font-weight:bold;font-style:italic">add</span>(ByteArrayPair item) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#888;font-style:italic">// Locate the element keeping track of predecessors at each level</span>
+</span></span><span style="display:flex;"><span>    Node current = sentinel;
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">for</span> (<span style="font-weight:bold;text-decoration:underline">int</span> i = levels - 1; i &gt;= 0; i--) {
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">while</span> (current.next[i] != <span style="font-weight:bold;text-decoration:underline">null</span> &amp;&amp; current.next[i].val.compareTo(item) &lt; 0)
+</span></span><span style="display:flex;"><span>            current = current.next[i];
+</span></span><span style="display:flex;"><span>        buffer[i] = current; 
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#888;font-style:italic">// Replace current value if possible</span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">if</span> (current.next[0] != <span style="font-weight:bold;text-decoration:underline">null</span> &amp;&amp; current.next[0].val.compareTo(item) == 0) {
+</span></span><span style="display:flex;"><span>        current.next[0].val = item;
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">return</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#888;font-style:italic">// Insert new node at a random level, updating predecessors</span>
+</span></span><span style="display:flex;"><span>    Node newNode = <span style="font-weight:bold;text-decoration:underline">new</span> Node(item, levels);
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">for</span> (<span style="font-weight:bold;text-decoration:underline">int</span> i = 0; i &lt; randomLevel(); i++) {
+</span></span><span style="display:flex;"><span>        newNode.next[i] = buffer[i].next[i];
+</span></span><span style="display:flex;"><span>        buffer[i].next[i] = newNode;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 class="heading" id="choosing-a-level">
+  Choosing a level
+  <a class="anchor" href="#choosing-a-level">#</a>
+</h3>
+<p>To determine a level, we can toss a coin and keep going until we get heads.
+This would require a lot of random generations, a faster way is to generate a single
+number and use its binary representation as boolean values.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="font-weight:bold;font-style:italic;text-decoration:underline">private</span> <span style="font-weight:bold;text-decoration:underline">int</span> <span style="color:#666;font-weight:bold;font-style:italic">randomLevel</span>() {
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">int</span> level = 1;
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">long</span> n = rn.nextLong();
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">while</span> (level &lt; levels &amp;&amp; (n &amp; (1L &lt;&lt; level)) != 0)
+</span></span><span style="display:flex;"><span>        level++;
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">return</span> level;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 class="heading" id="sstable">
+  SSTable
+  <a class="anchor" href="#sstable">#</a>
+</h2>
+<p>A Sorted String Table is a disk-based structure for sorted immutable data.
+They consist of two main files, one with actual data and another with an index to speed up look-ups.</p>
+<h3 class="heading" id="indexing-and-look-ups">
+  Indexing and Look-Ups
+  <a class="anchor" href="#indexing-and-look-ups">#</a>
+</h3>
+<p>Given the data file, searching for a key can be implemented with a full scan. This is tremendously slow
+on big files, hence we rely on indexing to skip portions of data.</p>
+<p>Given a sampling factor $k$, we build a sparse index with keys at position $0, k, 2k$, and so on.
+By storing the index in an array we can rely on binary search to find a given offset in the data file, where we can start
+a linear scan. This permits us to skip a lot of unnecessary comparisons and locate a file portion that likely stores our value.</p>
+<p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure class=" img-light">
+
+    <div class="img-container" style="--w: 1738; --h: 684;">
+        <img loading="lazy" alt="sstable" src="/posts/lsm/sstable-l.webp#light" width="1738" height="684">
+    </div>
+
+    
+</figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure class=" img-dark">
+
+    <div class="img-container" style="--w: 1738; --h: 684;">
+        <img loading="lazy" alt="sstable" src="/posts/lsm/sstable-d.webp#dark" width="1738" height="684">
+    </div>
+
+    
+</figure>
+</p>
+<p>Note that we can stop the search as soon as the current element surpasses the wanted one.
+Below is the code for searching, this implementation is as lazy as possible, meaning that we only read
+what&rsquo;s strictly necessary while iterating on the input stream.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="font-weight:bold;font-style:italic;text-decoration:underline">public</span> <span style="font-weight:bold;text-decoration:underline">byte</span>[] <span style="color:#666;font-weight:bold;font-style:italic">get</span>(<span style="font-weight:bold;text-decoration:underline">byte</span>[] key) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">if</span> (compare(key, minKey) == -1 || compare(key, maxKey) == 1)
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">return</span> <span style="font-weight:bold;text-decoration:underline">null</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#888;font-style:italic">// binary search an offset to start search</span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">long</span> offset = getCandidateOffsetIndex(key);
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">int</span> remaining = size - sparseSizeCount.getInt(offsetIndex);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#888;font-style:italic">// move input stream to the offset given by the index</span>
+</span></span><span style="display:flex;"><span>    is.seek(offset);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">int</span> cmp = 1;
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">int</span> searchKeyLen = key.length, readKeyLen, readValueLen;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">byte</span>[] readKey;
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">while</span> (cmp &gt; 0 &amp;&amp; remaining &gt; 0) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        remaining--;
+</span></span><span style="display:flex;"><span>        readKeyLen = is.readVByteInt();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#888;font-style:italic">// gone too far</span>
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">if</span> (readKeyLen &gt; searchKeyLen) {
+</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;text-decoration:underline">return</span> <span style="font-weight:bold;text-decoration:underline">null</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#888;font-style:italic">// gone too short</span>
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">if</span> (readKeyLen &lt; searchKeyLen) {
+</span></span><span style="display:flex;"><span>            readValueLen = is.readVByteInt();
+</span></span><span style="display:flex;"><span>            is.skip(readKeyLen + readValueLen);
+</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;text-decoration:underline">continue</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#888;font-style:italic">// read full key, compare, if equal read value</span>
+</span></span><span style="display:flex;"><span>        readValueLen = is.readVByteInt();
+</span></span><span style="display:flex;"><span>        readKey = is.readNBytes(readKeyLen);
+</span></span><span style="display:flex;"><span>        cmp = compare(key, readKey);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">if</span> (cmp == 0) {
+</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;text-decoration:underline">return</span> is.readNBytes(readValueLen);
+</span></span><span style="display:flex;"><span>        } <span style="font-weight:bold;text-decoration:underline">else</span> {
+</span></span><span style="display:flex;"><span>            is.skip(readValueLen);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">return</span> <span style="font-weight:bold;text-decoration:underline">null</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 class="heading" id="bloom-filters">
+  Bloom Filters
+  <a class="anchor" href="#bloom-filters">#</a>
+</h3>
+<p>What happens when we search for a key that&rsquo;s not on disk? We waste a lot of precious CPU cycles
+on binary searching and seeking on an offset, and iterating until we surpass the wanted key.</p>
+<p>To avoid unnecessary operations we can rely on a compact and probabilistic structure such as <a href="https://en.wikipedia.org/wiki/Bloom_filter">Bloom Filters</a>.
+The idea is to have a structure that answers membership queries, having some false positive answers, but no false negatives.
+We can tune the structure for our particular needs, by specifying a false-positive rate.</p>
+<p>So, while looking for a key, we first test for probabilistic membership, and if the answer is negative, we can
+early return null from the search.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="font-weight:bold;font-style:italic;text-decoration:underline">public</span> <span style="font-weight:bold;text-decoration:underline">byte</span>[] <span style="color:#666;font-weight:bold;font-style:italic">get</span>(<span style="font-weight:bold;text-decoration:underline">byte</span>[] key) {
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">if</span> (!bloomFilter.mightContain(key))
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">return</span> <span style="font-weight:bold;text-decoration:underline">null</span>;
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 class="heading" id="data-layout">
+  Data layout
+  <a class="anchor" href="#data-layout">#</a>
+</h3>
+<p>Data is disk-resident, hence we need to define a binary format to follow, with minimal overhead.
+An SSTable is made of $n$ elements, where each one of them has a variable length <em>key</em> and <em>value</em>.</p>
+<p>Key and value pairs are byte arrays, and to lay them out on disk we encode their length $l$, followed
+by $l$ bytes.
+Each integer is written in <a href="https://nlp.stanford.edu/IR-book/html/htmledition/variable-byte-codes-1.html">variable byte encoding</a>,
+to not waste 32 bits on small numbers. <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></p>
+<p>This encoding uses a byte to store a continuation bit and a 7-bit payload containing part of the
+represented number. For instance, consider the number $456$ and its binary representation $111001000$,
+the variable byte encoded version is:</p>
+<p>$$|1|0000011|0|1001000|$$</p>
+<p>The first byte begins with one, hence that the number is not finished, while the second block starts
+with zero, indicating no more bytes are needed to decode the current integer.</p>
+<p>The index file is a list of keys, so we can use the same length plus payload encoding for it.
+Each index entry has an offset related to it, specifying the number of bytes to skip in the
+file to reach it. Those offsets are increasing, so we can use something like <a href="https://en.wikipedia.org/wiki/Delta_encoding">delta-encoding</a> to store them. Below is an example of such encoding:
+$$0, 25, 76, \dots$$
+$$\downarrow$$
+$$0, (25 - 0), (76 - 25), \dots$$
+Resulting integers are smaller, thus encoded in fewer bytes.</p>
+<p>Finally, Bloom Filters are represented by some hyperparameters and a bit vector, that we can encode as is.</p>
+<h2 class="heading" id="putting-it-all-together">
+  Putting it all together
+  <a class="anchor" href="#putting-it-all-together">#</a>
+</h2>
+<p>We saw how to construct an SStable and how a Skip List works in memory, It is time to combine the
+two to obtain the final engine.</p>
+<p>The main components of the tree are:</p>
+<ul>
+<li><em>in-memory mutable buffer</em> or <em>Memtable</em>: a skip list as presented in the previous paragraphs, with a max size;</li>
+<li><em>in-memory immutable buffers</em>: a list of skip lists containing memtables that need to be flushed to disk;</li>
+<li><em>disk-resident tables</em>: a collection of SSTables obtained from memtables flushing, they are divided into levels,
+level zero containing the most recent data.</li>
+</ul>
+<p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure class=" img-light">
+
+    <div class="img-container" style="--w: 1843; --h: 982;">
+        <img loading="lazy" alt="tree" src="/posts/lsm/tree-l.webp#light" width="1843" height="982">
+    </div>
+
+    
+</figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure class=" img-dark">
+
+    <div class="img-container" style="--w: 1843; --h: 982;">
+        <img loading="lazy" alt="tree" src="/posts/lsm/tree-d.webp#dark" width="1843" height="982">
+    </div>
+
+    
+</figure>
+</p>
+<p>We are going to first see how primitives are defined, and then give an overview of how the tree is maintained,
+with buffer flushing and table compaction.</p>
+<h3 class="heading" id="insertion-and-search">
+  Insertion and Search
+  <a class="anchor" href="#insertion-and-search">#</a>
+</h3>
+<p>To insert a new element we simply add it to the in-memory buffer. If the list does not exceed the maximum size we are done, otherwise the current list is scheduled for disk flushing, and the mutable buffer is re-initialized.</p>
+<p>Searching is a bit trickier, and has at most three steps:</p>
+<ul>
+<li>query the mutable buffer;</li>
+<li>query all the immutable buffers scheduled for flushing;</li>
+<li>query all the disk tables starting from level zero and on.</li>
+</ul>
+<p>If, at any point, the wanted key is found, we can stop the search.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="font-weight:bold;font-style:italic;text-decoration:underline">public</span> <span style="font-weight:bold;text-decoration:underline">byte</span>[] <span style="color:#666;font-weight:bold;font-style:italic">get</span>(<span style="font-weight:bold;text-decoration:underline">byte</span>[] key) {
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">byte</span>[] result;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">if</span> ((result = mutableMemtable.get(key)) != <span style="font-weight:bold;text-decoration:underline">null</span>)
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">return</span> result;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">for</span> (<span style="font-weight:bold;font-style:italic;text-decoration:underline">var</span> memtable : immutableMemtables)
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">if</span> ((result = memtable.get(key)) != <span style="font-weight:bold;text-decoration:underline">null</span>)
+</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;text-decoration:underline">return</span> result;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">for</span> (<span style="font-weight:bold;font-style:italic;text-decoration:underline">var</span> level : tables)
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">for</span> (<span style="font-weight:bold;font-style:italic;text-decoration:underline">var</span> table : level)
+</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;text-decoration:underline">if</span> ((result = table.get(key)) != <span style="font-weight:bold;text-decoration:underline">null</span>)
+</span></span><span style="display:flex;"><span>                <span style="font-weight:bold;text-decoration:underline">return</span> result;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">return</span> <span style="font-weight:bold;text-decoration:underline">null</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 class="heading" id="flushing-the-memtable-to-disk">
+  Flushing the Memtable to disk
+  <a class="anchor" href="#flushing-the-memtable-to-disk">#</a>
+</h3>
+<p>When a given threshold is met, the Memtable is scheduled for flushing. To avoid blocking the whole
+Tree until data is persisted on disk, we use a background thread.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="font-weight:bold;font-style:italic;text-decoration:underline">private</span> <span style="font-weight:bold;text-decoration:underline">void</span> <span style="color:#666;font-weight:bold;font-style:italic">checkMemtableSize</span>() {
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">if</span> (mutableMemtable.size() &lt;= mutableMemtableMaxSize)
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">return</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">synchronized</span> (immutableMemtablesLock) {
+</span></span><span style="display:flex;"><span>        immutableMemtables.addFirst(mutableMemtable);
+</span></span><span style="display:flex;"><span>        mutableMemtable = <span style="font-weight:bold;text-decoration:underline">new</span> Memtable(mutableMemtableMaxSize);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The background executor collects the older memtable to flush and creates a level-zero SSTable
+on disk. It is important to guard critical sections while doing such operations.</p>
+<h3 class="heading" id="tables-compaction">
+  Tables compaction
+  <a class="anchor" href="#tables-compaction">#</a>
+</h3>
+<p>Flushing many Memtables on disk creates excessive read amplification, as we need to potentially query a lot
+of different structures to find the wanted element.
+One solution is to employ periodic compaction of disk tables.</p>
+<p>Flushing many Memtables on disk creates excessive read amplification, as we need to potentially query a lot of different structures to find the wanted element. One solution is to employ periodic compaction of disk tables.</p>
+<p>The main idea is to perform <strong>Sorted Runs</strong>: </p>
+<ul>
+<li>we take $N$ tables, creating a sorted iterator over their union;</li>
+<li>when we find a duplicated key we keep the most recent one;</li>
+<li>we then pick a max table size, and start to write this iterator to disk, once we reach the max size, a new table is made.</li>
+</ul>
+<p>This results in a list of non-overlapping tables, meaning we likely search only in one of them during a query.
+For instance, given the following three tables, ordered by flushing time:</p>
+<ul>
+<li>$t_1 = [ a : 1, b : 2 ]$</li>
+<li>$t_2 = [ b : 7, c : 3 ]$</li>
+<li>$t_3 = [ a : 9, d : 9 ]$</li>
+</ul>
+<p>The result after a sorted run where the max table size is 3 will be <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>:
+$$\text{sorted run} = [a:10, b:20, c:30], [d:50, z:100]$$</p>
+<p>This process is triggered periodically by a background thread,
+we fix a maximum size for each level in the SST list and, if the size exceeds this limit,
+we perform a sorted run merging level $l$ with $l + 1$. Level and SST max sizes increase by a factor of $1.75$ on each level.</p>
+<p>Merging the SSTables in a single sorted iterator is equivalent to the problem of merging $k$ sorted iterators.
+The problem can be solved by using a priority queue to find the next element in $log(k)$ time complexity. <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup></p>
+<h2 class="heading" id="conclusions">
+  Conclusions
+  <a class="anchor" href="#conclusions">#</a>
+</h2>
+<p>Overall this was a really fun project, there were far more implementation
+challenges than I expected and some cool DSA concepts came up here and
+there during the design.</p>
+<p>There is a lot that could be done to improve the project, skip lists could
+be optimized further, bloom
+filters could be made more cache efficient, and proper crash recovery could
+be implemented. I&rsquo;ll perhaps update the code in the future.</p>
+<p>Thank you for reading this far, feel free to get in touch for suggestions or clarifications!</p>
+<p>Have a nice day 😃</p>
+<h3 class="heading" id="references">
+  References
+  <a class="anchor" href="#references">#</a>
+</h3>
+<ul>
+<li><a href="https://dataintensive.net/">Designing Data-Intensive Applications</a></li>
+<li><a href="https://www.databass.dev/">Database Internals</a></li>
+<li><a href="https://api.drum.lib.umd.edu/server/api/core/bitstreams/17176ef8-8330-4a6c-8b75-4cd18c570bec/content">A Skip List Cookbook</a></li>
+</ul>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>Complexity is not actually the same from a theoretical standpoint, indeed worst case time complexity is $O(n)$ for every operation on Skip Lists.
+This happens when we don&rsquo;t create levels.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>There exist a lot of different encodings to store integers in a compressed fashion. Some of the
+most famous are <a href="https://en.wikipedia.org/wiki/Elias_delta_coding">$\delta$</a> and
+<a href="https://en.wikipedia.org/wiki/Elias_gamma_coding">$\gamma$</a> codes by Peter Elias,
+<a href="https://en.wikipedia.org/wiki/Golomb_coding">Golomb coding</a> and many more. Each one of them is better suited to
+a given probability distribution of integers.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p>Note that in reality we focus on byte size and not number of elements.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4">
+<p>If you want to give this task a try, here&rsquo;s an equivalent <a href="https://leetcode.com/problems/merge-k-sorted-lists/">Leetcode problem</a>.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+    </div>
+  </article>
+
+  
+
+  
+
+  
+  
+
+<div class="single-pagination">
+    <hr />
+
+    <div class="flexnowrap">
+
+        <div class="single-pagination-prev">
+            
+        </div>
+
+        <div class="single-pagination-next">
+            
+            <div class="single-pagination-container-next">
+                <div class="single-pagination-text">
+                    <a href="/posts/search-engine/">
+                        Search Engine in Rust
+                    </a>
+                </div>
+                <div class="single-pagination-text">→</div>
+            </div>
+            
+        </div>
+
+    </div>
+
+    <hr />
+</div>
+
+
+
+  
+
+  
+
+  
+  <div class="back-to-top">
+    <a href="#top">
+      back to top
+    </a>
+  </div>
+  
+
+</div>
+
+
+    </main>
+  </div>
+
+  
+  
+
+
+
+
+
+    
+
+
+
+
+  <footer>
+    
+
+    
+    
+
+
+
+
+
+    
+
+
+
+
+    
+    <p>Powered by
+        <a href="https://gohugo.io/">Hugo</a>
+        and
+        <a href="https://github.com/tomfran/typo">tomfran/typo</a>
+    </p>
+    
+    
+    
+
+
+  </footer>
+
+  
+  <link rel="stylesheet" 
+  href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+  
+<script defer 
+  src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+
+<script defer
+  src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body);"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false }
+      ]
+    });
+  });
+</script>
+  
+</body>
+
+<script src="/js/theme-switch.js"></script>
+<script defer src="/js/copy-code.js"></script>
+</html>
