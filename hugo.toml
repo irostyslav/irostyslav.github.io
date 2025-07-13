@@ -1,6 +1,6 @@
 baseURL = 'https://irostyslav.github.io/'
 languageCode = 'en-us'
-title = 'My website'
+title = 'My Personal Blog'
 theme = 'typo'
 
 # Google analytics code
