@@ -9,6 +9,18 @@ googleAnalytics = "G-xxxxxxxxx"
 [taxonomies]
 tag = 'tags'
 
+
+# Third-party analytics and tracking (Add this section!)
+  [params.thirdparty]
+    google_analytics = ""
+    cloudflare_analytics = ""
+    matomo_analytics = ""
+    plausible_analytics = ""
+    hotjar_tracking = ""
+    do_not_track = true # Set to true to disable all analytics by default
+
+
+    
 [params]
 # Meta description
 description = "A Tech Blog"
