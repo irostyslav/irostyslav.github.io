@@ -3,25 +3,13 @@ languageCode = 'en-us'
 title = 'My Personal Blog'
 theme = 'typo'
 
-# Google analytics code
+# Google analytics code (this is a top-level param, usually outside [params])
 googleAnalytics = "G-xxxxxxxxx"
 
 [taxonomies]
 tag = 'tags'
 
-
-# Third-party analytics and tracking (Add this section!)
-  [params.thirdparty]
-    google_analytics = ""
-    cloudflare_analytics = ""
-    matomo_analytics = ""
-    plausible_analytics = ""
-    hotjar_tracking = ""
-    do_not_track = true # Set to true to disable all analytics by default
-
-
-    
-[params]
+[params] # THIS IS THE ONE AND ONLY [params] HEADER!
 # Meta description
 description = "A Tech Blog"
 
@@ -77,6 +65,15 @@ url = "/posts"
 [[params.menu]]
 name = "about"
 url = "/about"
+
+# Third-party analytics and tracking (This is now correctly nested under [params])
+[params.thirdparty]
+  google_analytics = ""
+  cloudflare_analytics = ""
+  matomo_analytics = ""
+  plausible_analytics = ""
+  hotjar_tracking = ""
+  do_not_track = true # Set to true to disable all analytics by default
 
 # Syntax highlight on code blocks
 [markup]
