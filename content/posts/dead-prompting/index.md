@@ -1,9 +1,9 @@
 ---
-title: "1111 Prompt engineering is dead. "
+title: "1111 my test"
 # author: "Rostyslav Ivanitsa"
 # authorAvatarPath: "/avatar.jpeg"
-date: "1111 2025-07-5"
-summary: "1111 A probabilistic collection leveraging Bloom Filters to store a set of 1 billion visited URLs in 18mb."
+date: "2025-07-5"
+summary: "1111 A "
 description: "What are the communication bottlenecks between us and it?"
 toc: true
 readTime: true
