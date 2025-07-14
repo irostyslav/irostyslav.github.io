@@ -2,7 +2,7 @@
 title: "1111 Prompt engineering is dead. "
 # author: "Rostyslav Ivanitsa"
 # authorAvatarPath: "/avatar.jpeg"
-date: "1111 2025-06-17"
+date: "1111 2025-07-5"
 summary: "1111 A probabilistic collection leveraging Bloom Filters to store a set of 1 billion visited URLs in 18mb."
 description: "What are the communication bottlenecks between us and it?"
 toc: true
@@ -10,7 +10,7 @@ readTime: true
 autonumber: true
 math: true
 tags: ["rust"]
-showTags: false
+showTags: true
 ---
 
 I've been in the process of coding a web crawler in Rust and faced a problem with keeping an in-memory to-visit queue.
