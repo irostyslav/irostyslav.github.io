@@ -5,7 +5,7 @@ hideBackToTop: true
 hidePagination: true
 ---
 
-Hi all, I’m a software engineer currently working on search infrastructure at Apple in Zurich. Before that, I was at Amazon’s Berlin office.
+Hi all, I’m a product manager currently working on ai service at stelth startup in SF. Before that, I was at Amazon, Salesforce, Sephora in the Bay Area.
 
 I hold a Bachelor’s degree from the [University of Trento](https://www.unitn.it/) and a Master’s degree from the [University of Milan](https://www.unimi.it/). During my studies, I developed a strong interest in algorithms, data structures, distributed systems, databases, and search engines. I explored these areas through my Master’s thesis on [graph compression](https://github.com/tomfran/ANS-Graph-compression) and through side projects, including implementations of an [LSM tree](https://github.com/tomfran/LSM-Tree) and a [search engine](https://github.com/tomfran/search-rs).
 
