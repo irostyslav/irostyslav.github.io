@@ -1,10 +1,10 @@
 ---
-title: "title-Probabilistic to-visit Queue"
-# author: "Francesco Tomaselli"
+title: "Prompt engineering is dead. "
+# author: "Rostyslav Ivanitsa"
 # authorAvatarPath: "/avatar.jpeg"
-date: "2024-05-16"
-summary: "summary-A probabilistic collection leveraging Bloom Filters to store a set of 1 billion visited URLs in 18mb."
-description: "A probabilistic to-visit queue written in Rust, leveraging a Bloom Filter to detect already visited elements."
+date: "2025-06-17"
+summary: "What are the communication bottlenecks between us and it?"
+description: "What are the communication bottlenecks between us and it?"
 toc: true
 readTime: true
 autonumber: true
