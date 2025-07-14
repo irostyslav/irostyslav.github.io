@@ -21,7 +21,7 @@ hideHeader = false
 # Intro on main page, content is markdown
 homeIntroTitle = 'Hi there! 👋'
 homeIntroContent = """
-Ros is here. I am a product manager located in the Bay Area. For the last decade +, I've been a pm at companies like Amazon, Salesforce, Sephora, and others.  My focus: taking ideas from inception to scale, impacting millions. Here I share some of my learnings.
+Call me Ros. I am a product manager with background in software engineering. For the last decade +, I've been a pm at Amazon, Salesforce, Sephora, and others.  My focus: turning fuzzy ideas into working solutions loved by many. Here I share some of my thoughts, failures, and successes.
 """
 
 # Collection to display on home

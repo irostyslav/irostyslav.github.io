@@ -4,11 +4,33 @@
     {{ partial "functions/get_hook.html" (dict "hook" "footer_start" "context" .) }}
 
     {{ if not .Site.Params.footerContent }}
-    <p>Powered by
-        <a href="https://gohugo.io/">Hugo</a>
-        and
-        <a href="https://github.com/tomfran/typo">tomfran/typo</a>
-    </p>
+
+<footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+
+        <span>
+            build w
+            <a href="https://gohugo.io/">hugo</a>
+            + 
+            <a href="https://github.com/irostyslav/irostyslav.github.io">source</a>
+            <br>
+        </span>
+        
+        <span>
+            <a href="mailto:ros@ivanitsa.com">ros@ivanitsa.com</a>.
+        </span>
+            
+            <br>
+        <span>
+            &copy; {{ now.Year }}
+        </span>
+
+
+        </div>
+    </div>
+</footer>
+
     {{ end }}
     
     {{ with .Site.Params.footerContent }}

@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on My Personal Blog</title>
+    <title>Posts on Rostyslav Ivanitsa</title>
     <link>http://localhost:1313/posts/</link>
-    <description>Recent content in Posts on My Personal Blog</description>
+    <description>Recent content in Posts on Rostyslav Ivanitsa</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 16 May 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 05 Jul 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>1 Probabilistic to-visit Queue</title>
+      <title>1111 my tests</title>
+      <link>http://localhost:1313/posts/dead-prompting/</link>
+      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/dead-prompting/</guid>
+      <description>1111 A</description>
+    </item>
+    <item>
+      <title>Prompt engineering is dead. </title>
       <link>http://localhost:1313/posts/prob-queue/</link>
-      <pubDate>Thu, 16 May 2024 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 17 Jun 2025 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/prob-queue/</guid>
       <description>A probabilistic collection leveraging Bloom Filters to store a set of 1 billion visited URLs in 18mb.</description>
     </item>
     <item>
-      <title>2 Search Engine in Rust</title>
+      <title>Search Engine in Rust</title>
       <link>http://localhost:1313/posts/search-engine/</link>
       <pubDate>Thu, 01 Feb 2024 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/search-engine/</guid>
       <description>A search engine overview and Rust implementation, supporting free and boolean ranked queries, efficient disk and memory usage, and spelling correction.</description>
     </item>
     <item>
-      <title>3 Log-Structured Merge Tree</title>
+      <title>Log-Structured Merge Tree</title>
       <link>http://localhost:1313/posts/lsm/</link>
       <pubDate>Sun, 12 Nov 2023 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/lsm/</guid>
       <description>An LSM Tree overview and Java implementation, with a Skiplist, SStables, and background compaction from scratch.</description>
     </item>
     <item>
-      <title> 4 </title>
+      <title></title>
       <link>http://localhost:1313/posts/my-first-post/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/my-first-post/</guid>
