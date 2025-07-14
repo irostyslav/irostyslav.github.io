@@ -1,6 +1,6 @@
 baseURL = 'https://irostyslav.github.io/'
 languageCode = 'en-us'
-title = 'My Personal Blog'
+title = 'Rostyslav Ivanitsa'
 theme = 'typo'
 
 # Google analytics code (this is a top-level param, usually outside [params])
