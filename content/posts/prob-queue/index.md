@@ -3,7 +3,7 @@ title: "Prompt engineering is dead. "
 # author: "Rostyslav Ivanitsa"
 # authorAvatarPath: "/avatar.jpeg"
 date: "2025-06-17"
-summary: "What are the communication bottlenecks between us and it?"
+summary: "A probabilistic collection leveraging Bloom Filters to store a set of 1 billion visited URLs in 18mb."
 description: "What are the communication bottlenecks between us and it?"
 toc: true
 readTime: true
