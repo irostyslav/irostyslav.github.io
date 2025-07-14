@@ -19,10 +19,9 @@ colorPalette = 'default'
 hideHeader = false
 
 # Intro on main page, content is markdown
-homeIntroTitle = 'Hi!'
+homeIntroTitle = 'Hi there! 👋'
 homeIntroContent = """
-I am an Italian Software Engineer with a strong foundation in computer science and a passion for solving complex problems.
-I am interested in a range of topics, including algorithms, distributed systems, databases, and information retrieval.
+Ros is here. I am a product manager located in the Bay Area. For the last decade +, I've been a pm at companies like Amazon, Salesforce, Sephora, and others.  My focus: taking ideas from inception to scale, impacting millions. Here I share some of my learnings.
 """
 
 # Collection to display on home
