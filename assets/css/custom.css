@@ -1,1 +1,43 @@
 /* Place custom css here */
+
+/* Styling for the Hashtags/Topics Block on Homepage */
+.tags-cloud-block {
+    margin-top: 1em;
+    margin-bottom: 1em; /* Space below the tag block */
+    padding: 0.1em;
+    background-color: var(--code-bg-color); /* Use a subtle background color */
+    border-radius: 1px; /* Slightly rounded corners */
+    text-align: left; /* Center the heading and tags */
+}
+
+.tags-cloud-block h5 {
+    margin-top: 0em;
+    margin-bottom: 0.5em;
+    font-size: 1em;
+    color: var(--primary-color); /* Use a theme color */
+}
+
+.tags-list {
+    display: flex; /* Make tags flow nicely */
+    flex-wrap: wrap; /* Wrap tags to next line if space runs out */
+    justify-content: left; /* Center the tags within the block */
+    column-gap: -1em; /* Horizontal space between tags on the same line */
+    row-gap: 0em;    /* Vertical space between lines of wrapped tags */
+    
+}
+
+.tag-link {
+    display: inline-block;
+    padding: 0.1em 0.2em;
+    background-color: var(--secondary-color); /* Background for each tag */
+    color: var(--background-color); /* Text color for tags */
+    text-decoration: none;
+    border-radius: 1.0px;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background-color: var(--link-hover-color); /* Darker on hover */
+        color: var(--text-color);
+    }
+}

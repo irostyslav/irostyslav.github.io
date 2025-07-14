@@ -34,8 +34,27 @@
 
 {{ if .Site.Params.homeCollection }}
 
+
+
 <div class="list-container">
+
+
+{{/* RosCode - Start of Custom Hashtags Block */}}
+{{ if .Site.Taxonomies.tags }}
+<div class="tags-cloud-block">
+  <h5>keywords</h5>
+    <div class="tags-list">
+        {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
+            <a href="{{ "/tags/" | relLangURL }}{{ $name | urlize }}" class="tag-link">#{{ $name }} </a>
+        {{ end }} 
+    </div>
+</div>
+{{ end }}
+{{/* End of Custom Hashtags Block */}}
+
+
     {{ with .Site.Params.homeCollectionTitle}}
+
     <h1> {{ . }} </h1>
     {{ end }}
 

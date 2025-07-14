@@ -9,7 +9,7 @@ toc: true
 readTime: true
 autonumber: true
 math: true
-tags: ["rust"]
+tags: ["information-retrieval", "rust", "judo", "sports", "ai", "career", "pm", "psychology", "trekking", "craft", "hobby", "books"]
 showTags: true
 ---
 
