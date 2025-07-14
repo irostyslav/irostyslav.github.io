@@ -1,3 +1,4 @@
+
 {{ $showFooter := default true .Site.Params.showFooter }}
 {{ if $showFooter }}
     {{/* Footer start hook */}}
@@ -5,7 +6,8 @@
 
     {{ if not .Site.Params.footerContent }}
 
-<footer class="footer" style="margin-bottom: 60px;">
+<footer class="footer"
+style="margin-bottom: 50px; margin-top: 0em;">
     <div class="footer__inner">
         <div class="footer__content" style="text-align: center;">
 
@@ -25,8 +27,6 @@
         <span>
             &copy; {{ now.Year }}
         </span>
- <br>
-
         </div>
     </div>
 </footer>
