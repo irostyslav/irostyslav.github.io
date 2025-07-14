@@ -21,7 +21,7 @@ hideHeader = false
 # Intro on main page, content is markdown
 homeIntroTitle = 'Hi there! 👋'
 homeIntroContent = """
-Call me Ros. I am a product manager with background in software engineering. For the last decade +, I've been a pm at Amazon, Salesforce, Sephora, and others.  My focus: turning fuzzy ideas into working solutions loved by many. Here I share some of my thoughts, failures, and successes.
+Call me Ros. I am a product manager with background in software engineering and data science. For the last decade +, I've been a pm at Amazon, Salesforce, Sephora.  My focus: turning fuzzy ideas into working solutions loved by many. Here I share some of my thoughts, failures, and successes.
 """
 
 # Collection to display on home
@@ -40,6 +40,7 @@ showCurrentPage = true
 home = "Home"
 
 # Social icons
+
 [[params.social]]
 name = "linkedin"
 url = "https://www.linkedin.com/in/rostyslavivanitsa/"
