@@ -1,8 +1,8 @@
 ---
-title: "1111 my test"
+title: "1111 my tests"
 # author: "Rostyslav Ivanitsa"
 # authorAvatarPath: "/avatar.jpeg"
-date: "2025-07-5"
+date: "2025-07-05"
 summary: "1111 A "
 description: "What are the communication bottlenecks between us and it?"
 toc: true
