@@ -42,15 +42,15 @@ home = "Home"
 # Social icons
 [[params.social]]
 name = "linkedin"
-url = "https://www.linkedin.com/in/user/"
+url = "https://www.linkedin.com/in/rostyslavivanitsa/"
 
 [[params.social]]
-name = "medium"
-url = "https://medium.com/@user"
+name = "twitter"
+url = "https://x.com/irostyslav"
 
 [[params.social]]
 name = "github"
-url = "https://github.com/user"
+url = "https://github.com/irostyslav"
 
 # Main menu pages
 [[params.menu]]
