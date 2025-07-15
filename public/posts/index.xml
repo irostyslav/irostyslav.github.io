@@ -9,11 +9,11 @@
     <lastBuildDate>Sat, 05 Jul 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>1111 my tests</title>
+      <title>Prompt Engineering: Dead?</title>
       <link>http://localhost:1313/posts/dead-prompting/</link>
       <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/dead-prompting/</guid>
-      <description>Prompt Engineering: Dead?</description>
+      <description>Manual prompt engineering is inefficient and dead. The future involves automated prompt optimization using a three-part system: a core LLM application, an LLM-as-a-judge evaluator to measure performance, and an auto-improving agent that researches, generates, and refines prompts. This approach has shown significant performance gains, shifting the focus from manual prompt tweaking to building robust evaluators and agentic systems for continuous, automated LLM improvement</description>
     </item>
     <item>
       <title>Prompt engineering is dead. </title>

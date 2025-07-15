@@ -1,9 +1,9 @@
 ---
-title: "1111 my tests"
+title: "Prompt Engineering: Dead?"
 # author: "Rostyslav Ivanitsa"
 # authorAvatarPath: "/avatar.jpeg"
 date: "2025-07-05"
-summary: "Prompt Engineering: Dead?"
+summary: "Manual prompt engineering is inefficient and dead. The future involves automated prompt optimization using a three-part system: a core LLM application, an LLM-as-a-judge evaluator to measure performance, and an auto-improving agent that researches, generates, and refines prompts. This approach has shown significant performance gains, shifting the focus from manual prompt tweaking to building robust evaluators and agentic systems for continuous, automated LLM improvement"
 description: "What are the communication bottlenecks between us and it?"
 toc: true
 readTime: true
