@@ -12,8 +12,6 @@ math: true
 tags: ["prompting", "ai"]
 showTags: true
 ---
-**TLDR:**
-Manual prompt engineering is inefficient and "dead." The future involves automated prompt optimization using a three-part system: a core LLM application, an LLM-as-a-judge evaluator to measure performance, and an auto-improving agent that researches, generates, and refines prompts. This approach has shown significant performance gains, shifting the focus from manual prompt tweaking to building robust evaluators and agentic systems for continuous, automated LLM improvement.
 
 # Prompt Engineering: Dead? What's Next and Where to Focus
 The phrase "prompt engineering is dead" might sound extreme, but it reflects a growing sentiment among practitioners working with Large Language Models (LLMs). The argument isn't that prompts are irrelevant, but rather that the manual, iterative process traditionally known as "prompt engineering" is becoming obsolete, or perhaps, was never truly "engineering" in the first sense.

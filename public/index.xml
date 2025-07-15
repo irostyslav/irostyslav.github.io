@@ -9,6 +9,13 @@
     <lastBuildDate>Sat, 05 Jul 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>PMs versus AI Agents</title>
+      <link>http://localhost:1313/posts/pm-ai-agents/</link>
+      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/pm-ai-agents/</guid>
+      <description>Generative AI in product teams is limited by data access and isolation. The next wave is AI agents deeply integrated into core systems, acting as proactive, autonomous, goal-oriented, context-aware, and action-oriented digital teammates. This will transform product management by automating mundane tasks, freeing PMs to focus on true strategy, discovery, and leadership, amplifying their impact.</description>
+    </item>
+    <item>
       <title>Prompt Engineering: Dead?</title>
       <link>http://localhost:1313/posts/dead-prompting/</link>
       <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
