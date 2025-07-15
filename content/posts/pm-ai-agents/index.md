@@ -21,6 +21,7 @@ The digital landscape of product development is shifting beneath our feet. While
 
 The horizon reveals a new dawn: AI deeply woven into the fabric of our "single source of truth" systems. This isn't just about asking questions and getting answers; it's about an intelligence imbued with the intimate knowledge of your strategic compass, every nascent idea, the pulse of your team's capacity, and the authentic voice of your customers. The magic? It unfolds without the need for a meticulously crafted prompt. This profound evolution is being powered by a new class of digital entities: AI agents. Though still nascent in commercial offerings, their disruptive power demands our immediate attention.
 
+<br>
 
 ```mermaid
 mindmap
@@ -71,7 +72,7 @@ mindmap
         Amplifier, not replacement
 ```
 <center>key facts</center>
-
+<br>
 
 ## The Agent's Blueprint: More Than Just a Tool
 
