@@ -3,319 +3,80 @@ title: "1111 my tests"
 # author: "Rostyslav Ivanitsa"
 # authorAvatarPath: "/avatar.jpeg"
 date: "2025-07-05"
-summary: "1111 A "
+summary: "Prompt Engineering: Dead?"
 description: "What are the communication bottlenecks between us and it?"
 toc: true
 readTime: true
 autonumber: true
 math: true
-tags: ["information-retrieval", "rust", "judo", "sports", "ai", "career", "pm", "psychology", "trekking", "craft", "hobby", "books"]
+tags: ["prompting", "ai"]
 showTags: true
 ---
+**TLDR:**
+Manual prompt engineering is inefficient and "dead." The future involves automated prompt optimization using a three-part system: a core LLM application, an LLM-as-a-judge evaluator to measure performance, and an auto-improving agent that researches, generates, and refines prompts. This approach has shown significant performance gains, shifting the focus from manual prompt tweaking to building robust evaluators and agentic systems for continuous, automated LLM improvement.
 
-I've been in the process of coding a web crawler in Rust and faced a problem with keeping an in-memory to-visit queue.
-The idea is to have a collection of nodes to visit, which discards duplicates, with minimal memory overhead.
+# Prompt Engineering: Dead? What's Next and Where to Focus
+The phrase "prompt engineering is dead" might sound extreme, but it reflects a growing sentiment among practitioners working with Large Language Models (LLMs). The argument isn't that prompts are irrelevant, but rather that the manual, iterative process traditionally known as "prompt engineering" is becoming obsolete, or perhaps, was never truly "engineering" in the first sense.
 
-## The Problem
+## The Limitations of Manual Prompt Iteration
+Many who have worked extensively with LLMs know the drill: you craft a prompt, test it, find its shortcomings, tweak it, and repeat. This often feels less like a systematic engineering discipline and more like an art form, or even a continuous negotiation with the model. The goal is simple – to make the LLM behave predictably, answer accurately, and align with specific requirements.
 
-A problem like this could be solved by using a simple set. Before inserting a new element, we check for membership into the visited set and discard duplicates.
+However, this manual iteration process quickly becomes inefficient and unsustainable. Why should human developers spend countless hours refining instructions when the core desire is for the LLM to learn from examples and consistently follow directives? This inherent frustration points towards a need for a more automated, scalable approach.
 
-In the following examples, rust is used, and elements are Strings, coming from crawled web pages.
+## The Rise of Automated Prompt Optimization
+The future lies in automating the discovery and refinement of effective prompts. This new paradigm treats prompt optimization as a machine learning problem, leveraging a feedback loop to continuously improve performance. The core components of such an automated system include:
 
-```rust
-pub struct Sieve {
-    filter: HashSet<String>,
-    urls: VecDeque<String>,
-}
+### 1. The Core LLM Application
+At the foundation is your LLM-powered application, often a Retrieval Augmented Generation (RAG) pipeline. This typically involves:
 
-impl Sieve {
-    pub fn new() -> Sieve {
-        Sieve {
-            filter: HashSet::new(),
-            urls: VecDeque::new(),
-        }
-    }
+A vector database for retrieving relevant information.
 
-    pub fn push(&mut self, url: String) {
-        if self.filter.contains(&url) {
-            return;
-        }
+An LLM service for generating responses.
 
-        self.filter.insert(url.clone());
-        self.urls.push_back(url);
-    }
+Initial prompts that guide the LLM in processing user queries and retrieved context to produce an answer.
 
-    pub fn pop(&mut self) -> Option<String> {
-        self.urls.pop_front()
-    }
-}
-```
-This should be fine right? The answer is yes if the elements you add to it are limited, otherwise, the memory consumption of the set grows indefinitely.
+### 2. The Evaluator: The Key to Progress
+For any system to improve, it must first be able to measure its performance. An "LLM as a judge" evaluator is a powerful technique here. This involves:
 
-We can do better by relying on the same ideas but with a different Set implementation.
+* **Creating a Dataset:** A collection of representative questions or scenarios relevant to your application's domain.
 
-## Bloom Filters
+* **Defining Ground Truth:** For each question, specifying the expected facts or characteristics the LLM's answer should contain.
 
-A Bloom Filters is a space-efficient probabilistic data structure. It can be used to answer membership queries with one caveat, it makes errors with a certain probability.
+* **Scoring Mechanism:** The evaluator takes the LLM's generated answer and assesses it against the predefined ground truth, assigning a score and providing reasons for any discrepancies. This quantifiable score is crucial for driving automated improvement.
 
-### The Algorithm
+This evaluation step transforms subjective prompt quality into an objective, measurable metric.
 
-An Bloom Filter is composed by two elements: 
-- A bit array of $m$ bits, initially set to zero;
-- $d$ hash functions, where $d$ is a small constant.
+### 3. The Auto-Improving Agent: The New "Engineer"
+This is where the automation truly takes over. An intelligent agent is designed to systematically optimize the prompts. Its operational loop typically involves:
 
-**Adding an element**
+* Baseline Measurement: The agent first uses the evaluator to get an initial performance score for the current prompt.
 
-To add a new element, we feed it to the $d$ hash functions, obtaining $d$ indexes in the range $[0, m-1]$, used to set these positions to one in the bit array.
+* Failure Analysis: It analyzes the reasons for any evaluation failures, identifying areas where the prompt is insufficient or misleading.
 
-**Checking for membership**
+* Knowledge Integration: The agent can access and process information on effective prompting strategies and best practices.
 
-As for insertion, we compute $d$ hash values, and then check if all those bits are set to one in the bit array. 
+Prompt Generation: Combining the failure analysis with prompting knowledge, the agent generates a new, refined version of the prompt.
 
-### Dealing with False Positives
+Re-evaluation and Iteration: The new prompt is then fed back into the LLM application, and the evaluator runs again to measure the impact. This iterative process allows the agent to continuously "learn" and converge on optimal prompts.
 
-A Filter is constructed with two parameters in mind: the number of expected insertions, and the wanted false-positive rate. Those two quantities determine the required number of bits and hash functions in the structure.
+### The Shift: From Manual Tweaking to System Design
+The results of this automated approach are compelling. Significant improvements in LLM performance can be achieved rapidly, without human intervention in the prompt writing process. Prompts that might take human engineers days or weeks to perfect can be generated and optimized automatically.
 
-Given $n$ the number of wanted elements, and $\epsilon$ the wanted false positive rate, the following holds: 
-$$ m = -\frac{n * \ln(p)}{\ln(2)^2} $$
+This doesn't mean prompts are irrelevant; it means the method of creating and refining them is changing. The focus shifts from the tedious task of manually writing and iterating on prompts to the more strategic work of:
 
-The number of hash functions can be computed as:
-$$ d = -\frac{\ln(p)}{\ln(2)} $$
+* Building Robust Evaluators: Designing comprehensive datasets and effective scoring mechanisms that accurately reflect desired LLM behavior.
 
-As those relations hold, we can balance the tradeoffs between speed, as more hash functions mean more bits to set and false-positive rate.
+* Developing Intelligent Agents: Creating the automated systems that can analyze performance, research strategies, and generate optimized prompts.
 
-### Practical Hash Computation
+Managing the Optimization Loop: Ensuring the automated process is efficient, avoids overfitting, and generalizes well to new data.
 
-We do not want to compute an excessive number of hash functions, as they can be quite costly. An easy way to reduce the required number of hash computations is to compute two hash values and combine them like so: 
+## Conclusion: Where to Focus Now
+The era of manual prompt engineering, as a primary method of LLM optimization, is indeed giving way to a more sophisticated, automated approach. For those working with LLMs, the path forward is clear: invest your efforts not in endless prompt tweaking, but in building the infrastructure that allows prompts to optimize themselves. Focus on:
 
-$$ h_i = h_1 + h_2 * i$$
+* Data Quality: High-quality evaluation datasets are paramount.
 
-To compute two different hash values we can hash an element once and split the hash bits in two.
+* Evaluation Metrics: Develop precise and objective ways to measure LLM output.
 
-### Implementation
+* Agentic Systems: Design and implement intelligent agents capable of iterative prompt refinement.
 
-Here is a practical implementation of the Bloom Filter. To represent a bit array we use a vector of 128 bit numbers where each bit is considered as a different position.
-
-```rust
-pub struct Filter {
-    size: usize,
-    d: u32,
-    bits: Vec<u128>,
-    set_bits: u32,
-}
-```
-
-**Construction**
-
-Given the expected number of insertions and false-positive rate, we compute the optimal number of bits to use.
-
-```rust
-pub fn new(n: usize, p: f64) -> Filter {
-    let log_2 = 2_f64.ln();
-    let log_p = p.ln();
-
-    let size = ((-(n as f64) * log_p) / (log_2 * log_2)) as usize;
-    let d = (-log_p / log_2).ceil() as u32;
-    let bits = vec![0; (size as f64 / 128.0).ceil() as usize];
-    let set_bits = 0;
-
-    Filter {
-        size,
-        d,
-        bits,
-        set_bits,
-    }
-}
-```
-
-**Insertion**
-
-We compute $d$ hash values and use them to set the corresponding bits in the bit array.
-
-```rust
-pub fn add(&mut self, data: &[u8]) {
-    let (h1, h2) = Self::hash(data);
-
-    for i in 0..self.d {
-        let bit = (h1 as u128 + h2 as u128 * i as u128) as usize % self.size;
-        self.bits[bit / 128] |= 1 << (bit % 128);
-    }
-}
-```
-
-**Membership Queries**
-
-We compute $d$ hash values and use them to check that the bits are all set.
-
-```rust
-pub fn contains(&mut self, data: &[u8]) -> bool {
-    let (h1, h2) = Self::hash(data);
-
-    for i in 0..self.d {
-        let bit = (h1 as u128 + h2 as u128 * i as u128) as usize % self.size;
-        if self.bits[bit / 128] & (1 << (bit % 128)) == 0 {
-            return false;
-        }
-    }
-    true
-}
-```
-
-**Estimating size**
-
-Size can be estimated with a simple formula: 
-
-$$s = - \frac{m}{d} \ln \Bigg [ 1 - \frac{X}{m} \Bigg ] $$
-
-Where $X$ is the number of bits set to one.
-
-```rust
-pub fn estimated_size(&self) -> usize {
-    (-(self.size as f64 / self.d as f64)
-        * (1f64 - self.set_bits as f64 / self.size as f64).ln()) as usize
-}
-```
-
-We hence need a new value, `set_bits`, which can be updated on each insertion. Here is the tweaked `add` function.
-
-```rust
-pub fn add(&mut self, data: &[u8]) {
-    ...
-    // subtract old number of set bits in this block
-    self.set_bits -= self.bits[bit / 128].count_ones();
-    // set bit to one
-    self.bits[bit / 128] |= 1 << (bit % 128);
-    // add new number of set bits in this block
-    self.set_bits += self.bits[bit / 128].count_ones();    
-    ...
-}
-```
-
-**Full Implementation**
-
-Wrapping everything up, here is the complete Bloom Filter implementation.
-
-```rust
-pub struct Filter {
-    size: usize,
-    d: u32,
-    bits: Vec<u128>,
-    set_bits: u32,
-}
-
-impl Default for Filter {
-    fn default() -> Self {
-        Self::new(1_000_000, 0.01)
-    }
-}
-
-impl Filter {
-    pub fn new(n: usize, p: f64) -> Filter {
-        let log_2 = 2_f64.ln();
-        let log_p = p.ln();
-
-        let size = ((-(n as f64) * log_p) / (log_2 * log_2)) as usize;
-        let d = (-log_p / log_2).ceil() as u32;
-        let bits = vec![0; (size as f64 / 128.0).ceil() as usize];
-        let set_bits = 0;
-
-        Filter {
-            size,
-            d,
-            bits,
-            set_bits,
-        }
-    }
-
-    pub fn add(&mut self, data: &[u8]) {
-        let (h1, h2) = Self::hash(data);
-
-        for i in 0..self.d {
-            let bit = (h1 as u128 + h2 as u128 * i as u128) as usize % self.size;
-            self.set_bits -= self.bits[bit / 128].count_ones();
-            self.bits[bit / 128] |= 1 << (bit % 128);
-            self.set_bits += self.bits[bit / 128].count_ones();
-        }
-    }
-
-    pub fn contains(&mut self, data: &[u8]) -> bool {
-        let (h1, h2) = Self::hash(data);
-
-        for i in 0..self.d {
-            let bit = (h1 as u128 + h2 as u128 * i as u128) as usize % self.size;
-            if self.bits[bit / 128] & (1 << (bit % 128)) == 0 {
-                return false;
-            }
-        }
-        true
-    }
-
-    pub fn estimated_size(&self) -> usize {
-        (-(self.size as f64 / self.d as f64)
-            * (1f64 - self.set_bits as f64 / self.size as f64).ln()) as usize
-    }
-
-    fn hash(data: &[u8]) -> (u64, u64) {
-        let h = fastmurmur3::hash(data);
-        let mask: u128 = (1 << 64) - 1;
-        ((h & mask) as u64, (h >> 64) as u64)
-    }
-}
-```
-
-### Memory Footprint
-
-A great property of those Filters is that their memory footprint is fixed, independent of how many elements we store. What degrades is the false positive rate, until it reaches one. What degrades is the false positive rate, until it reaches one. 
-
-The space efficiency is amazing, for instance, **1 Billion elements**, with a false positive rate of **0.01%** can be stored in just over **18mb**.
-
-## The Solution
-
-Here is the final solution to this problem. The Sieve struct now accepts a parameter indicating the expected number of elements that are enqueued. Once we surpass this threshold, the filter performance starts to deteriorate.
-
-```rust
-use log::warn;
-
-pub struct Sieve {
-    filter: Filter,
-    urls: VecDeque<String>,
-    expected_size: usize,
-}
-
-impl Sieve {
-    pub fn new(expected_urls_num: usize) -> Sieve {
-        Sieve {
-            filter: Filter::new(expected_urls_num, 0.01),
-            urls: VecDeque::new(),
-            expected_size: expected_urls_num,
-        }
-    }
-
-    pub fn push(&mut self, url: String) {
-        let url_bytes = url.as_bytes();
-
-        if self.filter.contains(url_bytes) {
-            return;
-        }
-
-        self.filter.add(url_bytes);
-        self.urls.push_back(url);
-
-        let filter_size = self.filter.estimated_size();
-        if filter_size >= self.expected_size {
-            warn!(
-                "Filter size ({}) exceeds Sieve expected size ({})",
-                filter_size, self.expected_size
-            );
-        }
-    }
-
-    pub fn pop(&mut self) -> Option<String> {
-        self.urls.pop_front()
-    }
-}
-```
-
-Thank you for reading this far, feel free to get in touch for suggestions or clarifications!
-Have a nice day 😃
-
+By embracing automated prompt optimization, we can move beyond the "art" of prompt engineering and truly embrace an "engineering" discipline for building powerful, reliable LLM applications.

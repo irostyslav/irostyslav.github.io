@@ -16,80 +16,24 @@
       <description></description>
     </item>
     <item>
-      <title>Books</title>
-      <link>http://localhost:1313/tags/books/</link>
+      <title>Prompting</title>
+      <link>http://localhost:1313/tags/prompting/</link>
       <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/books/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Career</title>
-      <link>http://localhost:1313/tags/career/</link>
-      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/career/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Craft</title>
-      <link>http://localhost:1313/tags/craft/</link>
-      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/craft/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Hobby</title>
-      <link>http://localhost:1313/tags/hobby/</link>
-      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/hobby/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Information-Retrieval</title>
-      <link>http://localhost:1313/tags/information-retrieval/</link>
-      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/information-retrieval/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Judo</title>
-      <link>http://localhost:1313/tags/judo/</link>
-      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/judo/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Pm</title>
-      <link>http://localhost:1313/tags/pm/</link>
-      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/pm/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Psychology</title>
-      <link>http://localhost:1313/tags/psychology/</link>
-      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/psychology/</guid>
+      <guid>http://localhost:1313/tags/prompting/</guid>
       <description></description>
     </item>
     <item>
       <title>Rust</title>
       <link>http://localhost:1313/tags/rust/</link>
-      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 17 Jun 2025 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/tags/rust/</guid>
       <description></description>
     </item>
     <item>
-      <title>Sports</title>
-      <link>http://localhost:1313/tags/sports/</link>
-      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/sports/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Trekking</title>
-      <link>http://localhost:1313/tags/trekking/</link>
-      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/trekking/</guid>
+      <title>Information-Retrieval</title>
+      <link>http://localhost:1313/tags/information-retrieval/</link>
+      <pubDate>Thu, 01 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/information-retrieval/</guid>
       <description></description>
     </item>
     <item>
@@ -104,6 +48,69 @@
       <link>http://localhost:1313/tags/java/</link>
       <pubDate>Sun, 12 Nov 2023 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/tags/java/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Books</title>
+      <link>http://localhost:1313/tags/books/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/books/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Career</title>
+      <link>http://localhost:1313/tags/career/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/career/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Craft</title>
+      <link>http://localhost:1313/tags/craft/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/craft/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Hobby</title>
+      <link>http://localhost:1313/tags/hobby/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/hobby/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Judo</title>
+      <link>http://localhost:1313/tags/judo/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/judo/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Pm</title>
+      <link>http://localhost:1313/tags/pm/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/pm/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Psychology</title>
+      <link>http://localhost:1313/tags/psychology/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/psychology/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Sports</title>
+      <link>http://localhost:1313/tags/sports/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/sports/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Trekking</title>
+      <link>http://localhost:1313/tags/trekking/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/trekking/</guid>
       <description></description>
     </item>
   </channel>

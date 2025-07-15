@@ -47,12 +47,8 @@
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2025-07-05T00:00:00+00:00">
     <meta property="article:modified_time" content="2025-07-05T00:00:00+00:00">
-    <meta property="article:tag" content="Information-Retrieval">
-    <meta property="article:tag" content="Rust">
-    <meta property="article:tag" content="Judo">
-    <meta property="article:tag" content="Sports">
+    <meta property="article:tag" content="Prompting">
     <meta property="article:tag" content="Ai">
-    <meta property="article:tag" content="Career">
 
 
 
@@ -165,7 +161,7 @@
     <header class="single-intro-container">
         
         <h1 class="single-title">1111 my tests</h1>
-        <p class="single-summary">1111 A</p>
+        <p class="single-summary">Prompt Engineering: Dead?</p>
         
         <div class="single-subsummary">
           
@@ -173,320 +169,130 @@
             
             <p class="single-date">
               <time datetime="2025-07-05T00:00:00&#43;00:00">July 5, 2025</time>
-              &nbsp; · &nbsp;7 min read
+              &nbsp; · &nbsp;5 min read
             </p>
           </div>
         </div>
         
     </header>    
         <div class="single-tags"><span>
-                  <a href="http://localhost:1313/tags/information-retrieval/">#Information-Retrieval</a>
-                </span><span>
-                  <a href="http://localhost:1313/tags/rust/">#Rust</a>
-                </span><span>
-                  <a href="http://localhost:1313/tags/judo/">#Judo</a>
-                </span><span>
-                  <a href="http://localhost:1313/tags/sports/">#Sports</a>
+                  <a href="http://localhost:1313/tags/prompting/">#Prompting</a>
                 </span><span>
                   <a href="http://localhost:1313/tags/ai/">#Ai</a>
-                </span><span>
-                  <a href="http://localhost:1313/tags/career/">#Career</a>
-                </span><span>
-                  <a href="http://localhost:1313/tags/pm/">#Pm</a>
-                </span><span>
-                  <a href="http://localhost:1313/tags/psychology/">#Psychology</a>
-                </span><span>
-                  <a href="http://localhost:1313/tags/trekking/">#Trekking</a>
-                </span><span>
-                  <a href="http://localhost:1313/tags/craft/">#Craft</a>
-                </span><span>
-                  <a href="http://localhost:1313/tags/hobby/">#Hobby</a>
-                </span><span>
-                  <a href="http://localhost:1313/tags/books/">#Books</a>
                 </span>
         </div>
       <aside class="toc">
         <p><strong>Table of contents</strong></p>
         <nav id="TableOfContents">
   <ul>
-    <li><a href="#the-problem">The Problem</a></li>
-    <li><a href="#bloom-filters">Bloom Filters</a>
+    <li><a href="#the-limitations-of-manual-prompt-iteration">The Limitations of Manual Prompt Iteration</a></li>
+    <li><a href="#the-rise-of-automated-prompt-optimization">The Rise of Automated Prompt Optimization</a>
       <ul>
-        <li><a href="#the-algorithm">The Algorithm</a></li>
-        <li><a href="#dealing-with-false-positives">Dealing with False Positives</a></li>
-        <li><a href="#practical-hash-computation">Practical Hash Computation</a></li>
-        <li><a href="#implementation">Implementation</a></li>
-        <li><a href="#memory-footprint">Memory Footprint</a></li>
+        <li><a href="#1-the-core-llm-application">1. The Core LLM Application</a></li>
+        <li><a href="#2-the-evaluator-the-key-to-progress">2. The Evaluator: The Key to Progress</a></li>
+        <li><a href="#3-the-auto-improving-agent-the-new-engineer">3. The Auto-Improving Agent: The New &ldquo;Engineer&rdquo;</a></li>
+        <li><a href="#the-shift-from-manual-tweaking-to-system-design">The Shift: From Manual Tweaking to System Design</a></li>
       </ul>
     </li>
-    <li><a href="#the-solution">The Solution</a></li>
+    <li><a href="#conclusion-where-to-focus-now">Conclusion: Where to Focus Now</a></li>
   </ul>
 </nav>
       </aside>
     
     <div class="single-content">
-      <p>I&rsquo;ve been in the process of coding a web crawler in Rust and faced a problem with keeping an in-memory to-visit queue.
-The idea is to have a collection of nodes to visit, which discards duplicates, with minimal memory overhead.</p>
-<h2 class="heading" id="the-problem">
-  The Problem
-  <a class="anchor" href="#the-problem">#</a>
+      <p><strong>TLDR:</strong>
+Manual prompt engineering is inefficient and &ldquo;dead.&rdquo; The future involves automated prompt optimization using a three-part system: a core LLM application, an LLM-as-a-judge evaluator to measure performance, and an auto-improving agent that researches, generates, and refines prompts. This approach has shown significant performance gains, shifting the focus from manual prompt tweaking to building robust evaluators and agentic systems for continuous, automated LLM improvement.</p>
+<h1 class="heading" id="prompt-engineering-dead-whats-next-and-where-to-focus">
+  Prompt Engineering: Dead? What&rsquo;s Next and Where to Focus
+  <a class="anchor" href="#prompt-engineering-dead-whats-next-and-where-to-focus">#</a>
+</h1>
+<p>The phrase &ldquo;prompt engineering is dead&rdquo; might sound extreme, but it reflects a growing sentiment among practitioners working with Large Language Models (LLMs). The argument isn&rsquo;t that prompts are irrelevant, but rather that the manual, iterative process traditionally known as &ldquo;prompt engineering&rdquo; is becoming obsolete, or perhaps, was never truly &ldquo;engineering&rdquo; in the first sense.</p>
+<h2 class="heading" id="the-limitations-of-manual-prompt-iteration">
+  The Limitations of Manual Prompt Iteration
+  <a class="anchor" href="#the-limitations-of-manual-prompt-iteration">#</a>
 </h2>
-<p>A problem like this could be solved by using a simple set. Before inserting a new element, we check for membership into the visited set and discard duplicates.</p>
-<p>In the following examples, rust is used, and elements are Strings, coming from crawled web pages.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">struct</span> <span style="color:#666;font-weight:bold;font-style:italic">Sieve</span> {
-</span></span><span style="display:flex;"><span>    filter: <span style="color:#666;font-weight:bold;font-style:italic">HashSet</span>&lt;<span style="font-weight:bold;font-style:italic">String</span>&gt;,
-</span></span><span style="display:flex;"><span>    urls: <span style="color:#666;font-weight:bold;font-style:italic">VecDeque</span>&lt;<span style="font-weight:bold;font-style:italic">String</span>&gt;,
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">impl</span> Sieve {
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">new</span>() -&gt; <span style="color:#666;font-weight:bold;font-style:italic">Sieve</span> {
-</span></span><span style="display:flex;"><span>        Sieve {
-</span></span><span style="display:flex;"><span>            filter: <span style="color:#666;font-weight:bold;font-style:italic">HashSet</span>::new(),
-</span></span><span style="display:flex;"><span>            urls: <span style="color:#666;font-weight:bold;font-style:italic">VecDeque</span>::new(),
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">push</span>(&amp;<span style="font-weight:bold;text-decoration:underline">mut</span> <span style="font-weight:bold;font-style:italic">self</span>, url: <span style="font-weight:bold;font-style:italic">String</span>) {
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">if</span> <span style="font-weight:bold;font-style:italic">self</span>.filter.contains(&amp;url) {
-</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;text-decoration:underline">return</span>;
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic">self</span>.filter.insert(url.clone());
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic">self</span>.urls.push_back(url);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">pop</span>(&amp;<span style="font-weight:bold;text-decoration:underline">mut</span> <span style="font-weight:bold;font-style:italic">self</span>) -&gt; <span style="font-weight:bold;font-style:italic">Option</span>&lt;<span style="font-weight:bold;font-style:italic">String</span>&gt; {
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic">self</span>.urls.pop_front()
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>This should be fine right? The answer is yes if the elements you add to it are limited, otherwise, the memory consumption of the set grows indefinitely.</p>
-<p>We can do better by relying on the same ideas but with a different Set implementation.</p>
-<h2 class="heading" id="bloom-filters">
-  Bloom Filters
-  <a class="anchor" href="#bloom-filters">#</a>
+<p>Many who have worked extensively with LLMs know the drill: you craft a prompt, test it, find its shortcomings, tweak it, and repeat. This often feels less like a systematic engineering discipline and more like an art form, or even a continuous negotiation with the model. The goal is simple – to make the LLM behave predictably, answer accurately, and align with specific requirements.</p>
+<p>However, this manual iteration process quickly becomes inefficient and unsustainable. Why should human developers spend countless hours refining instructions when the core desire is for the LLM to learn from examples and consistently follow directives? This inherent frustration points towards a need for a more automated, scalable approach.</p>
+<h2 class="heading" id="the-rise-of-automated-prompt-optimization">
+  The Rise of Automated Prompt Optimization
+  <a class="anchor" href="#the-rise-of-automated-prompt-optimization">#</a>
 </h2>
-<p>A Bloom Filters is a space-efficient probabilistic data structure. It can be used to answer membership queries with one caveat, it makes errors with a certain probability.</p>
-<h3 class="heading" id="the-algorithm">
-  The Algorithm
-  <a class="anchor" href="#the-algorithm">#</a>
+<p>The future lies in automating the discovery and refinement of effective prompts. This new paradigm treats prompt optimization as a machine learning problem, leveraging a feedback loop to continuously improve performance. The core components of such an automated system include:</p>
+<h3 class="heading" id="1-the-core-llm-application">
+  1. The Core LLM Application
+  <a class="anchor" href="#1-the-core-llm-application">#</a>
 </h3>
-<p>An Bloom Filter is composed by two elements:</p>
+<p>At the foundation is your LLM-powered application, often a Retrieval Augmented Generation (RAG) pipeline. This typically involves:</p>
+<p>A vector database for retrieving relevant information.</p>
+<p>An LLM service for generating responses.</p>
+<p>Initial prompts that guide the LLM in processing user queries and retrieved context to produce an answer.</p>
+<h3 class="heading" id="2-the-evaluator-the-key-to-progress">
+  2. The Evaluator: The Key to Progress
+  <a class="anchor" href="#2-the-evaluator-the-key-to-progress">#</a>
+</h3>
+<p>For any system to improve, it must first be able to measure its performance. An &ldquo;LLM as a judge&rdquo; evaluator is a powerful technique here. This involves:</p>
 <ul>
-<li>A bit array of $m$ bits, initially set to zero;</li>
-<li>$d$ hash functions, where $d$ is a small constant.</li>
+<li>
+<p><strong>Creating a Dataset:</strong> A collection of representative questions or scenarios relevant to your application&rsquo;s domain.</p>
+</li>
+<li>
+<p><strong>Defining Ground Truth:</strong> For each question, specifying the expected facts or characteristics the LLM&rsquo;s answer should contain.</p>
+</li>
+<li>
+<p><strong>Scoring Mechanism:</strong> The evaluator takes the LLM&rsquo;s generated answer and assesses it against the predefined ground truth, assigning a score and providing reasons for any discrepancies. This quantifiable score is crucial for driving automated improvement.</p>
+</li>
 </ul>
-<p><strong>Adding an element</strong></p>
-<p>To add a new element, we feed it to the $d$ hash functions, obtaining $d$ indexes in the range $[0, m-1]$, used to set these positions to one in the bit array.</p>
-<p><strong>Checking for membership</strong></p>
-<p>As for insertion, we compute $d$ hash values, and then check if all those bits are set to one in the bit array.</p>
-<h3 class="heading" id="dealing-with-false-positives">
-  Dealing with False Positives
-  <a class="anchor" href="#dealing-with-false-positives">#</a>
+<p>This evaluation step transforms subjective prompt quality into an objective, measurable metric.</p>
+<h3 class="heading" id="3-the-auto-improving-agent-the-new-engineer">
+  3. The Auto-Improving Agent: The New &ldquo;Engineer&rdquo;
+  <a class="anchor" href="#3-the-auto-improving-agent-the-new-engineer">#</a>
 </h3>
-<p>A Filter is constructed with two parameters in mind: the number of expected insertions, and the wanted false-positive rate. Those two quantities determine the required number of bits and hash functions in the structure.</p>
-<p>Given $n$ the number of wanted elements, and $\epsilon$ the wanted false positive rate, the following holds:
-$$ m = -\frac{n * \ln(p)}{\ln(2)^2} $$</p>
-<p>The number of hash functions can be computed as:
-$$ d = -\frac{\ln(p)}{\ln(2)} $$</p>
-<p>As those relations hold, we can balance the tradeoffs between speed, as more hash functions mean more bits to set and false-positive rate.</p>
-<h3 class="heading" id="practical-hash-computation">
-  Practical Hash Computation
-  <a class="anchor" href="#practical-hash-computation">#</a>
+<p>This is where the automation truly takes over. An intelligent agent is designed to systematically optimize the prompts. Its operational loop typically involves:</p>
+<ul>
+<li>
+<p>Baseline Measurement: The agent first uses the evaluator to get an initial performance score for the current prompt.</p>
+</li>
+<li>
+<p>Failure Analysis: It analyzes the reasons for any evaluation failures, identifying areas where the prompt is insufficient or misleading.</p>
+</li>
+<li>
+<p>Knowledge Integration: The agent can access and process information on effective prompting strategies and best practices.</p>
+</li>
+</ul>
+<p>Prompt Generation: Combining the failure analysis with prompting knowledge, the agent generates a new, refined version of the prompt.</p>
+<p>Re-evaluation and Iteration: The new prompt is then fed back into the LLM application, and the evaluator runs again to measure the impact. This iterative process allows the agent to continuously &ldquo;learn&rdquo; and converge on optimal prompts.</p>
+<h3 class="heading" id="the-shift-from-manual-tweaking-to-system-design">
+  The Shift: From Manual Tweaking to System Design
+  <a class="anchor" href="#the-shift-from-manual-tweaking-to-system-design">#</a>
 </h3>
-<p>We do not want to compute an excessive number of hash functions, as they can be quite costly. An easy way to reduce the required number of hash computations is to compute two hash values and combine them like so:</p>
-<p>$$ h_i = h_1 + h_2 * i$$</p>
-<p>To compute two different hash values we can hash an element once and split the hash bits in two.</p>
-<h3 class="heading" id="implementation">
-  Implementation
-  <a class="anchor" href="#implementation">#</a>
-</h3>
-<p>Here is a practical implementation of the Bloom Filter. To represent a bit array we use a vector of 128 bit numbers where each bit is considered as a different position.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">struct</span> <span style="color:#666;font-weight:bold;font-style:italic">Filter</span> {
-</span></span><span style="display:flex;"><span>    size: <span style="font-weight:bold;text-decoration:underline">usize</span>,
-</span></span><span style="display:flex;"><span>    d: <span style="font-weight:bold;text-decoration:underline">u32</span>,
-</span></span><span style="display:flex;"><span>    bits: <span style="font-weight:bold;font-style:italic">Vec</span>&lt;<span style="font-weight:bold;text-decoration:underline">u128</span>&gt;,
-</span></span><span style="display:flex;"><span>    set_bits: <span style="font-weight:bold;text-decoration:underline">u32</span>,
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p><strong>Construction</strong></p>
-<p>Given the expected number of insertions and false-positive rate, we compute the optimal number of bits to use.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">new</span>(n: <span style="font-weight:bold;text-decoration:underline">usize</span>, p: <span style="font-weight:bold;text-decoration:underline">f64</span>) -&gt; <span style="color:#666;font-weight:bold;font-style:italic">Filter</span> {
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> log_2 = 2_<span style="font-weight:bold;text-decoration:underline">f64</span>.ln();
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> log_p = p.ln();
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> size = ((-(n <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span>) * log_p) / (log_2 * log_2)) <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">usize</span>;
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> d = (-log_p / log_2).ceil() <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u32</span>;
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> bits = <span style="color:#666;font-weight:bold;font-style:italic">vec!</span>[0; (size <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span> / 128.0).ceil() <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">usize</span>];
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> set_bits = 0;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    Filter {
-</span></span><span style="display:flex;"><span>        size,
-</span></span><span style="display:flex;"><span>        d,
-</span></span><span style="display:flex;"><span>        bits,
-</span></span><span style="display:flex;"><span>        set_bits,
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p><strong>Insertion</strong></p>
-<p>We compute $d$ hash values and use them to set the corresponding bits in the bit array.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">add</span>(&amp;<span style="font-weight:bold;text-decoration:underline">mut</span> <span style="font-weight:bold;font-style:italic">self</span>, data: <span style="font-weight:bold;text-decoration:underline">&amp;</span>[<span style="font-weight:bold;text-decoration:underline">u8</span>]) {
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> (h1, h2) = <span style="font-weight:bold;font-style:italic">Self</span>::hash(data);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">for</span> i <span style="font-weight:bold;text-decoration:underline">in</span> 0..<span style="font-weight:bold;font-style:italic">self</span>.d {
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> bit = (h1 <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u128</span> + h2 <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u128</span> * i <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u128</span>) <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">usize</span> % <span style="font-weight:bold;font-style:italic">self</span>.size;
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic">self</span>.bits[bit / 128] |= 1 &lt;&lt; (bit % 128);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p><strong>Membership Queries</strong></p>
-<p>We compute $d$ hash values and use them to check that the bits are all set.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">contains</span>(&amp;<span style="font-weight:bold;text-decoration:underline">mut</span> <span style="font-weight:bold;font-style:italic">self</span>, data: <span style="font-weight:bold;text-decoration:underline">&amp;</span>[<span style="font-weight:bold;text-decoration:underline">u8</span>]) -&gt; <span style="font-weight:bold;text-decoration:underline">bool</span> {
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> (h1, h2) = <span style="font-weight:bold;font-style:italic">Self</span>::hash(data);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">for</span> i <span style="font-weight:bold;text-decoration:underline">in</span> 0..<span style="font-weight:bold;font-style:italic">self</span>.d {
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> bit = (h1 <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u128</span> + h2 <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u128</span> * i <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u128</span>) <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">usize</span> % <span style="font-weight:bold;font-style:italic">self</span>.size;
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">if</span> <span style="font-weight:bold;font-style:italic">self</span>.bits[bit / 128] &amp; (1 &lt;&lt; (bit % 128)) == 0 {
-</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;text-decoration:underline">return</span> <span style="font-weight:bold;text-decoration:underline">false</span>;
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">true</span>
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p><strong>Estimating size</strong></p>
-<p>Size can be estimated with a simple formula:</p>
-<p>$$s = - \frac{m}{d} \ln \Bigg [ 1 - \frac{X}{m} \Bigg ] $$</p>
-<p>Where $X$ is the number of bits set to one.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">estimated_size</span>(&amp;<span style="font-weight:bold;font-style:italic">self</span>) -&gt; <span style="font-weight:bold;text-decoration:underline">usize</span> {
-</span></span><span style="display:flex;"><span>    (-(<span style="font-weight:bold;font-style:italic">self</span>.size <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span> / <span style="font-weight:bold;font-style:italic">self</span>.d <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span>)
-</span></span><span style="display:flex;"><span>        * (1<span style="font-weight:bold;text-decoration:underline">f64</span> - <span style="font-weight:bold;font-style:italic">self</span>.set_bits <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span> / <span style="font-weight:bold;font-style:italic">self</span>.size <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span>).ln()) <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">usize</span>
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>We hence need a new value, <code>set_bits</code>, which can be updated on each insertion. Here is the tweaked <code>add</code> function.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">add</span>(&amp;<span style="font-weight:bold;text-decoration:underline">mut</span> <span style="font-weight:bold;font-style:italic">self</span>, data: <span style="font-weight:bold;text-decoration:underline">&amp;</span>[<span style="font-weight:bold;text-decoration:underline">u8</span>]) {
-</span></span><span style="display:flex;"><span>    ...
-</span></span><span style="display:flex;"><span>    <span style="color:#888;font-style:italic">// subtract old number of set bits in this block
-</span></span></span><span style="display:flex;"><span><span style="color:#888;font-style:italic"></span>    <span style="font-weight:bold;font-style:italic">self</span>.set_bits -= <span style="font-weight:bold;font-style:italic">self</span>.bits[bit / 128].count_ones();
-</span></span><span style="display:flex;"><span>    <span style="color:#888;font-style:italic">// set bit to one
-</span></span></span><span style="display:flex;"><span><span style="color:#888;font-style:italic"></span>    <span style="font-weight:bold;font-style:italic">self</span>.bits[bit / 128] |= 1 &lt;&lt; (bit % 128);
-</span></span><span style="display:flex;"><span>    <span style="color:#888;font-style:italic">// add new number of set bits in this block
-</span></span></span><span style="display:flex;"><span><span style="color:#888;font-style:italic"></span>    <span style="font-weight:bold;font-style:italic">self</span>.set_bits += <span style="font-weight:bold;font-style:italic">self</span>.bits[bit / 128].count_ones();    
-</span></span><span style="display:flex;"><span>    ...
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p><strong>Full Implementation</strong></p>
-<p>Wrapping everything up, here is the complete Bloom Filter implementation.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">struct</span> <span style="color:#666;font-weight:bold;font-style:italic">Filter</span> {
-</span></span><span style="display:flex;"><span>    size: <span style="font-weight:bold;text-decoration:underline">usize</span>,
-</span></span><span style="display:flex;"><span>    d: <span style="font-weight:bold;text-decoration:underline">u32</span>,
-</span></span><span style="display:flex;"><span>    bits: <span style="font-weight:bold;font-style:italic">Vec</span>&lt;<span style="font-weight:bold;text-decoration:underline">u128</span>&gt;,
-</span></span><span style="display:flex;"><span>    set_bits: <span style="font-weight:bold;text-decoration:underline">u32</span>,
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">impl</span> <span style="font-weight:bold;font-style:italic">Default</span> <span style="font-weight:bold;text-decoration:underline">for</span> Filter {
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">default</span>() -&gt; <span style="color:#666;font-weight:bold;font-style:italic">Self</span> {
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic">Self</span>::new(1_000_000, 0.01)
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">impl</span> Filter {
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">new</span>(n: <span style="font-weight:bold;text-decoration:underline">usize</span>, p: <span style="font-weight:bold;text-decoration:underline">f64</span>) -&gt; <span style="color:#666;font-weight:bold;font-style:italic">Filter</span> {
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> log_2 = 2_<span style="font-weight:bold;text-decoration:underline">f64</span>.ln();
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> log_p = p.ln();
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> size = ((-(n <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span>) * log_p) / (log_2 * log_2)) <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">usize</span>;
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> d = (-log_p / log_2).ceil() <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u32</span>;
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> bits = <span style="color:#666;font-weight:bold;font-style:italic">vec!</span>[0; (size <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span> / 128.0).ceil() <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">usize</span>];
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> set_bits = 0;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        Filter {
-</span></span><span style="display:flex;"><span>            size,
-</span></span><span style="display:flex;"><span>            d,
-</span></span><span style="display:flex;"><span>            bits,
-</span></span><span style="display:flex;"><span>            set_bits,
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">add</span>(&amp;<span style="font-weight:bold;text-decoration:underline">mut</span> <span style="font-weight:bold;font-style:italic">self</span>, data: <span style="font-weight:bold;text-decoration:underline">&amp;</span>[<span style="font-weight:bold;text-decoration:underline">u8</span>]) {
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> (h1, h2) = <span style="font-weight:bold;font-style:italic">Self</span>::hash(data);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">for</span> i <span style="font-weight:bold;text-decoration:underline">in</span> 0..<span style="font-weight:bold;font-style:italic">self</span>.d {
-</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> bit = (h1 <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u128</span> + h2 <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u128</span> * i <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u128</span>) <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">usize</span> % <span style="font-weight:bold;font-style:italic">self</span>.size;
-</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;font-style:italic">self</span>.set_bits -= <span style="font-weight:bold;font-style:italic">self</span>.bits[bit / 128].count_ones();
-</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;font-style:italic">self</span>.bits[bit / 128] |= 1 &lt;&lt; (bit % 128);
-</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;font-style:italic">self</span>.set_bits += <span style="font-weight:bold;font-style:italic">self</span>.bits[bit / 128].count_ones();
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">contains</span>(&amp;<span style="font-weight:bold;text-decoration:underline">mut</span> <span style="font-weight:bold;font-style:italic">self</span>, data: <span style="font-weight:bold;text-decoration:underline">&amp;</span>[<span style="font-weight:bold;text-decoration:underline">u8</span>]) -&gt; <span style="font-weight:bold;text-decoration:underline">bool</span> {
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> (h1, h2) = <span style="font-weight:bold;font-style:italic">Self</span>::hash(data);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">for</span> i <span style="font-weight:bold;text-decoration:underline">in</span> 0..<span style="font-weight:bold;font-style:italic">self</span>.d {
-</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> bit = (h1 <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u128</span> + h2 <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u128</span> * i <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u128</span>) <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">usize</span> % <span style="font-weight:bold;font-style:italic">self</span>.size;
-</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;text-decoration:underline">if</span> <span style="font-weight:bold;font-style:italic">self</span>.bits[bit / 128] &amp; (1 &lt;&lt; (bit % 128)) == 0 {
-</span></span><span style="display:flex;"><span>                <span style="font-weight:bold;text-decoration:underline">return</span> <span style="font-weight:bold;text-decoration:underline">false</span>;
-</span></span><span style="display:flex;"><span>            }
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">true</span>
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">estimated_size</span>(&amp;<span style="font-weight:bold;font-style:italic">self</span>) -&gt; <span style="font-weight:bold;text-decoration:underline">usize</span> {
-</span></span><span style="display:flex;"><span>        (-(<span style="font-weight:bold;font-style:italic">self</span>.size <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span> / <span style="font-weight:bold;font-style:italic">self</span>.d <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span>)
-</span></span><span style="display:flex;"><span>            * (1<span style="font-weight:bold;text-decoration:underline">f64</span> - <span style="font-weight:bold;font-style:italic">self</span>.set_bits <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span> / <span style="font-weight:bold;font-style:italic">self</span>.size <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">f64</span>).ln()) <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">usize</span>
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">hash</span>(data: <span style="font-weight:bold;text-decoration:underline">&amp;</span>[<span style="font-weight:bold;text-decoration:underline">u8</span>]) -&gt; (<span style="font-weight:bold;text-decoration:underline">u64</span>, <span style="font-weight:bold;text-decoration:underline">u64</span>) {
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> h = fastmurmur3::hash(data);
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> mask: <span style="font-weight:bold;text-decoration:underline">u128</span> = (1 &lt;&lt; 64) - 1;
-</span></span><span style="display:flex;"><span>        ((h &amp; mask) <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u64</span>, (h &gt;&gt; 64) <span style="font-weight:bold;text-decoration:underline">as</span> <span style="font-weight:bold;text-decoration:underline">u64</span>)
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 class="heading" id="memory-footprint">
-  Memory Footprint
-  <a class="anchor" href="#memory-footprint">#</a>
-</h3>
-<p>A great property of those Filters is that their memory footprint is fixed, independent of how many elements we store. What degrades is the false positive rate, until it reaches one. What degrades is the false positive rate, until it reaches one.</p>
-<p>The space efficiency is amazing, for instance, <strong>1 Billion elements</strong>, with a false positive rate of <strong>0.01%</strong> can be stored in just over <strong>18mb</strong>.</p>
-<h2 class="heading" id="the-solution">
-  The Solution
-  <a class="anchor" href="#the-solution">#</a>
+<p>The results of this automated approach are compelling. Significant improvements in LLM performance can be achieved rapidly, without human intervention in the prompt writing process. Prompts that might take human engineers days or weeks to perfect can be generated and optimized automatically.</p>
+<p>This doesn&rsquo;t mean prompts are irrelevant; it means the method of creating and refining them is changing. The focus shifts from the tedious task of manually writing and iterating on prompts to the more strategic work of:</p>
+<ul>
+<li>
+<p>Building Robust Evaluators: Designing comprehensive datasets and effective scoring mechanisms that accurately reflect desired LLM behavior.</p>
+</li>
+<li>
+<p>Developing Intelligent Agents: Creating the automated systems that can analyze performance, research strategies, and generate optimized prompts.</p>
+</li>
+</ul>
+<p>Managing the Optimization Loop: Ensuring the automated process is efficient, avoids overfitting, and generalizes well to new data.</p>
+<h2 class="heading" id="conclusion-where-to-focus-now">
+  Conclusion: Where to Focus Now
+  <a class="anchor" href="#conclusion-where-to-focus-now">#</a>
 </h2>
-<p>Here is the final solution to this problem. The Sieve struct now accepts a parameter indicating the expected number of elements that are enqueued. Once we surpass this threshold, the filter performance starts to deteriorate.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">use</span> log::warn;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">struct</span> <span style="color:#666;font-weight:bold;font-style:italic">Sieve</span> {
-</span></span><span style="display:flex;"><span>    filter: <span style="color:#666;font-weight:bold;font-style:italic">Filter</span>,
-</span></span><span style="display:flex;"><span>    urls: <span style="color:#666;font-weight:bold;font-style:italic">VecDeque</span>&lt;<span style="font-weight:bold;font-style:italic">String</span>&gt;,
-</span></span><span style="display:flex;"><span>    expected_size: <span style="font-weight:bold;text-decoration:underline">usize</span>,
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="font-weight:bold;text-decoration:underline">impl</span> Sieve {
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">new</span>(expected_urls_num: <span style="font-weight:bold;text-decoration:underline">usize</span>) -&gt; <span style="color:#666;font-weight:bold;font-style:italic">Sieve</span> {
-</span></span><span style="display:flex;"><span>        Sieve {
-</span></span><span style="display:flex;"><span>            filter: <span style="color:#666;font-weight:bold;font-style:italic">Filter</span>::new(expected_urls_num, 0.01),
-</span></span><span style="display:flex;"><span>            urls: <span style="color:#666;font-weight:bold;font-style:italic">VecDeque</span>::new(),
-</span></span><span style="display:flex;"><span>            expected_size: <span style="color:#666;font-weight:bold;font-style:italic">expected_urls_num</span>,
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">push</span>(&amp;<span style="font-weight:bold;text-decoration:underline">mut</span> <span style="font-weight:bold;font-style:italic">self</span>, url: <span style="font-weight:bold;font-style:italic">String</span>) {
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> url_bytes = url.as_bytes();
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">if</span> <span style="font-weight:bold;font-style:italic">self</span>.filter.contains(url_bytes) {
-</span></span><span style="display:flex;"><span>            <span style="font-weight:bold;text-decoration:underline">return</span>;
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic">self</span>.filter.add(url_bytes);
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic">self</span>.urls.push_back(url);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic;text-decoration:underline">let</span> filter_size = <span style="font-weight:bold;font-style:italic">self</span>.filter.estimated_size();
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;text-decoration:underline">if</span> filter_size &gt;= <span style="font-weight:bold;font-style:italic">self</span>.expected_size {
-</span></span><span style="display:flex;"><span>            <span style="color:#666;font-weight:bold;font-style:italic">warn!</span>(
-</span></span><span style="display:flex;"><span>                <span style="color:#666;font-style:italic">&#34;Filter size ({}) exceeds Sieve expected size ({})&#34;</span>,
-</span></span><span style="display:flex;"><span>                filter_size, <span style="font-weight:bold;font-style:italic">self</span>.expected_size
-</span></span><span style="display:flex;"><span>            );
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="font-weight:bold;text-decoration:underline">pub</span> <span style="font-weight:bold;text-decoration:underline">fn</span> <span style="color:#666;font-weight:bold;font-style:italic">pop</span>(&amp;<span style="font-weight:bold;text-decoration:underline">mut</span> <span style="font-weight:bold;font-style:italic">self</span>) -&gt; <span style="font-weight:bold;font-style:italic">Option</span>&lt;<span style="font-weight:bold;font-style:italic">String</span>&gt; {
-</span></span><span style="display:flex;"><span>        <span style="font-weight:bold;font-style:italic">self</span>.urls.pop_front()
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Thank you for reading this far, feel free to get in touch for suggestions or clarifications!
-Have a nice day 😃</p>
+<p>The era of manual prompt engineering, as a primary method of LLM optimization, is indeed giving way to a more sophisticated, automated approach. For those working with LLMs, the path forward is clear: invest your efforts not in endless prompt tweaking, but in building the infrastructure that allows prompts to optimize themselves. Focus on:</p>
+<ul>
+<li>
+<p>Data Quality: High-quality evaluation datasets are paramount.</p>
+</li>
+<li>
+<p>Evaluation Metrics: Develop precise and objective ways to measure LLM output.</p>
+</li>
+<li>
+<p>Agentic Systems: Design and implement intelligent agents capable of iterative prompt refinement.</p>
+</li>
+</ul>
+<p>By embracing automated prompt optimization, we can move beyond the &ldquo;art&rdquo; of prompt engineering and truly embrace an &ldquo;engineering&rdquo; discipline for building powerful, reliable LLM applications.</p>
 
     </div>
   </article>
