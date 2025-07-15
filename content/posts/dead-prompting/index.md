@@ -26,7 +26,7 @@ However, this manual iteration process quickly becomes inefficient and unsustain
 ## The Rise of Automated Prompt Optimization
 The future lies in automating the discovery and refinement of effective prompts. This new paradigm treats prompt optimization as a machine learning problem, leveraging a feedback loop to continuously improve performance. The core components of such an automated system include:
 
-### 1. The Core LLM Application
+### The Core LLM Application
 At the foundation is your LLM-powered application, often a Retrieval Augmented Generation (RAG) pipeline. This typically involves:
 
 A vector database for retrieving relevant information.
@@ -35,7 +35,7 @@ An LLM service for generating responses.
 
 Initial prompts that guide the LLM in processing user queries and retrieved context to produce an answer.
 
-### 2. The Evaluator: The Key to Progress
+### The Evaluator: The Key to Progress
 For any system to improve, it must first be able to measure its performance. An "LLM as a judge" evaluator is a powerful technique here. This involves:
 
 * **Creating a Dataset:** A collection of representative questions or scenarios relevant to your application's domain.
@@ -46,7 +46,7 @@ For any system to improve, it must first be able to measure its performance. An 
 
 This evaluation step transforms subjective prompt quality into an objective, measurable metric.
 
-### 3. The Auto-Improving Agent: The New "Engineer"
+### The Auto-Improving Agent: The New "Engineer"
 This is where the automation truly takes over. An intelligent agent is designed to systematically optimize the prompts. Its operational loop typically involves:
 
 * Baseline Measurement: The agent first uses the evaluator to get an initial performance score for the current prompt.
