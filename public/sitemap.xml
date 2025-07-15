@@ -2,56 +2,35 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/posts/dead-prompting/</loc>
-    <lastmod>2025-07-05T00:00:00+00:00</lastmod>
+    <loc>http://localhost:1313/</loc>
+    <lastmod>2025-07-16T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/</loc>
+    <lastmod>2025-07-16T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/ai/</loc>
     <lastmod>2025-07-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/books/</loc>
+    <loc>http://localhost:1313/posts/pm-ai-agents/</loc>
     <lastmod>2025-07-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/career/</loc>
+    <loc>http://localhost:1313/posts/dead-prompting/</loc>
     <lastmod>2025-07-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/craft/</loc>
-    <lastmod>2025-07-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/tags/hobby/</loc>
-    <lastmod>2025-07-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/</loc>
-    <lastmod>2025-07-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/tags/information-retrieval/</loc>
-    <lastmod>2025-07-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/tags/judo/</loc>
-    <lastmod>2025-07-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/tags/pm/</loc>
-    <lastmod>2025-07-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/posts/</loc>
-    <lastmod>2025-07-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/tags/psychology/</loc>
-    <lastmod>2025-07-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/tags/rust/</loc>
-    <lastmod>2025-07-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/tags/sports/</loc>
+    <loc>http://localhost:1313/tags/prompting/</loc>
     <lastmod>2025-07-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/</loc>
     <lastmod>2025-07-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/trekking/</loc>
-    <lastmod>2025-07-05T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/posts/prob-queue/</loc>
     <lastmod>2025-06-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/rust/</loc>
+    <lastmod>2025-06-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/information-retrieval/</loc>
+    <lastmod>2024-02-01T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/search-engine/</loc>
     <lastmod>2024-02-01T00:00:00+00:00</lastmod>

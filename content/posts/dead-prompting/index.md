@@ -10,7 +10,7 @@ readTime: true
 autonumber: true
 math: true
 tags: ["prompting", "ai"]
-showTags: true
+showTags: false
 ---
 
 # Prompt Engineering: Dead? What's Next and Where to Focus

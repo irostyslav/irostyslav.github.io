@@ -10,7 +10,7 @@ readTime: true
 autonumber: true
 math: true
 tags: ["prompting", "ai"]
-showTags: true
+showTags: false
 ---
 
 # Beyond the Prompt: How AI Agents Are Redefining Product Leadership

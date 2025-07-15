@@ -6,8 +6,15 @@
     <description>Recent content in Posts on Rostyslav Ivanitsa</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 05 Jul 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 14 Jul 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>To Grok or not to Grok</title>
+      <link>http://localhost:1313/posts/grok-me/</link>
+      <pubDate>Mon, 14 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/grok-me/</guid>
+      <description>Grok 4, a new LLM, boasts advanced reasoning, real-time search, and tool use, with a dual-model architecture (Standard and Heavy) and strong academic benchmark performance. However, its launch is marred by concerns over ideological bias (referencing its founder&amp;rsquo;s posts), a major antisemitic content moderation failure, and rapid jailbreak vulnerabilities, raising questions about its safety and neutrality despite ambitious future plans.</description>
+    </item>
     <item>
       <title>PMs versus AI Agents</title>
       <link>http://localhost:1313/posts/pm-ai-agents/</link>

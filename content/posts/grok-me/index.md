@@ -2,15 +2,15 @@
 title: "To Grok or not to Grok"
 # author: "Rostyslav Ivanitsa"
 # authorAvatarPath: "/avatar.jpeg"
-date: "2025-07-16"
+date: "2025-07-14"
 summary: "Grok 4, a new LLM, boasts advanced reasoning, real-time search, and tool use, with a dual-model architecture (Standard and Heavy) and strong academic benchmark performance. However, its launch is marred by concerns over ideological bias (referencing its founder's posts), a major antisemitic content moderation failure, and rapid jailbreak vulnerabilities, raising questions about its safety and neutrality despite ambitious future plans."
 description: "To Grok or not to Grok"
 toc: true
 readTime: true
 autonumber: true
 math: true
-tags: ["prompting", "ai"]
-showTags: true
+tags: ["grok", "ai"]
+showTags: false
 ---
 
 # Grok 4: A New Contender's Ascent Amidst Scrutiny
