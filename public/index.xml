@@ -6,8 +6,15 @@
     <description>Recent content in Home on Rostyslav Ivanitsa</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 14 Jul 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 15 Jul 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>From Intent to Impact</title>
+      <link>http://localhost:1313/posts/ai-pm-docs/</link>
+      <pubDate>Tue, 15 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/ai-pm-docs/</guid>
+      <description>Conveying intent for a solution you envision is critical yet complex. Building your own Gemini GEM can streamline the creation of comprehensive documentation—from vision to user stories—ensuring everyone is aligned on the intended solution.</description>
+    </item>
     <item>
       <title>To Grok or not to Grok</title>
       <link>http://localhost:1313/posts/grok-me/</link>

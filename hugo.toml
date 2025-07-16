@@ -82,13 +82,6 @@ url = "/about"
   hotjar_tracking = ""
   do_not_track = true # Set to true to disable all analytics by default
 
-# Syntax highlight on code blocks
-[markup]
-[markup.highlight]
-style = 'algol'
-  [markup.goldmark]
-    [markup.goldmark.renderer]
-      unsafe = true # <<<--- This line must be present and exactly 'true'
 
 # Giscus comments
 [params.giscus]
@@ -99,3 +92,14 @@ category = "General"
 categoryid = "categoryId"
 mapping = "pathname"
 theme = "preferred_color_scheme"
+
+# Syntax highlight on code blocks
+# GLOBAL MARKUP SETTINGS (This section must be at the very end and correctly formed)
+[markup]
+  [markup.highlight] # Settings for code block highlighting
+  style = 'algol' # Example style for code blocks
+
+  # Goldmark Markdown renderer settings (Hugo's default)
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true # <<<--- CRUCIAL: THIS MUST BE EXACTLY HERE TO ALLOW RAW HTML/COMPLEX MARKDOWN

@@ -3,18 +3,27 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>http://localhost:1313/tags/ai/</loc>
-    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
+    <lastmod>2025-07-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/grok/</loc>
-    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
+    <loc>http://localhost:1313/posts/ai-pm-docs/idex/</loc>
+    <lastmod>2025-07-15T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/</loc>
-    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
+    <lastmod>2025-07-15T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/pm/</loc>
+    <lastmod>2025-07-15T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/</loc>
-    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
+    <lastmod>2025-07-15T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2025-07-15T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/writing/</loc>
+    <lastmod>2025-07-15T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/grok/</loc>
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/grok-me/</loc>
