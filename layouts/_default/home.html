@@ -42,7 +42,7 @@
 {{/* RosCode - Start of Custom Hashtags Block */}}
 {{ if .Site.Taxonomies.tags }}
 <div class="tags-cloud-block">
-  <h5>keywords</h5>
+  <h5>things I care about</h5>
     <div class="tags-list">
         {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
             <a href="{{ "/tags/" | relLangURL }}{{ $name | urlize }}" class="tag-link">#{{ $name }} </a>

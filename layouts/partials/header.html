@@ -1,6 +1,9 @@
 {{/* Header */}}
 
+
+
 <div class="header">
+
 
     {{ if or (not (.Param "hideHeader")) .IsHome }}
 
@@ -21,10 +24,14 @@
                 /{{.name }}
             </a>
         </p>
+
         {{ end }}
         {{ end }}
     </div>
 
+
     {{ end }}
+
+    
 
 </div>

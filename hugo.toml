@@ -21,7 +21,10 @@ hideHeader = false
 # Intro on main page, content is markdown
 homeIntroTitle = 'Hi there! 👋'
 homeIntroContent = """
-Call me Ros. I am a product manager with background in software engineering and data science. For the last decade +, I've been a pm at Amazon, Salesforce, Sephora.  My focus: turning fuzzy ideas into working solutions loved by many. Here I share some of my thoughts, failures, and successes.
+Call me Ros. I am a product manager with a background in software engineering and data science. 
+For the last decade +, I've been a pm at Amazon, Salesforce, Sephora.  
+My focus: turning fuzzy ideas into working solutions loved by many. 
+Here I share some of my work/life experiences; thoughts and ideas, projects and hobbies, following with epic failures and modest successes.
 """
 
 # Collection to display on home
@@ -83,6 +86,9 @@ url = "/about"
 [markup]
 [markup.highlight]
 style = 'algol'
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true # <<<--- This line must be present and exactly 'true'
 
 # Giscus comments
 [params.giscus]
@@ -93,4 +99,3 @@ category = "General"
 categoryid = "categoryId"
 mapping = "pathname"
 theme = "preferred_color_scheme"
-
