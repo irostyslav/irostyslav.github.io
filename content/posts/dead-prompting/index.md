@@ -16,6 +16,9 @@ showTags: false
 
 # Prompt Engineering: Dead? What's Next and Where to Focus
 
+![sstable](lost.png#light)
+![sstable](lost.png#dark)
+
 <span class="drop-cap-letter">T </span>  he phrase "prompt engineering is dead" might sound extreme, but it reflects a growing sentiment among practitioners working with Large Language Models (LLMs). The argument isn't that prompts are irrelevant, but rather that the manual, iterative process traditionally known as "prompt engineering" is becoming obsolete, or perhaps, was never truly "engineering" in the first sense.
 
 ## The Limitations of Manual Prompt Iteration
