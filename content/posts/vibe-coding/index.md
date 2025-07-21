@@ -36,8 +36,6 @@ But, of course, there’s a catch—a significant one. While Vibe Coding speeds 
 
 The decision comes down to this trade-off—quick prototyping versus predictable technical solutions. It ultimately depends on how you integrate Vibe Coding into your workflow. Interestingly, the bottleneck has now shifted. It's no longer the development or design process—it’s about finding and solving *real* user problems. And that’s where product management takes center stage.
 
-For a vivid, hands-on journey into vibe coding, see [this illustrated guide (vas3k.blog)](https://vas3k.blog/notes/vibe_coding/).
-
 ---
 
 ## Vibe Coding vs. Development with AI and LLM
