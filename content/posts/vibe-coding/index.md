@@ -2,7 +2,7 @@
 title: "Vibe Coding intro"
 # author: "Rostyslav Ivanitsa"
 # authorAvatarPath: "/avatar.jpeg"
-date: "2025-07-15"
+date: "2025-04-08"
 summary: "Vibe Coding is a revolutionary approach to software development that leverages AI to rapidly prototype ideas by using natural language prompts. Coined by Andrej Karpathy, it allows creators to focus on creativity rather than coding, making it ideal for quick tests and low-stakes projects."
 description: "tbd"
 toc: true

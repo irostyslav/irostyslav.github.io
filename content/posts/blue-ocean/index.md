@@ -1,8 +1,8 @@
 ---
-title: "Search Engine in Rust"
-# author: "Francesco Tomaselli"
+title: "Discovering a Blue Ocean ideas with AI"
+# author: "Rostyslav Ivanitsa"
 # authorAvatarPath: "/avatar.jpeg"
-date: "2024-02-01"
+date: "2025-01-13"
 summary: "Creating new, uncontested markets 'blue oceans' rather than competing in overcrowded ones 'red oceans'. It emphasizes value innovation—simultaneously increasing customer value and reducing costs."
 toc: true
 readTime: true
@@ -13,6 +13,9 @@ showTags: false
 ---
 
 # Discovering a Blue Ocean ideas with AI
+
+![sstable](blue-ocean1.jpg#light)
+![sstable](blue-ocean1.jpg#dark)
 
 ### How to craft effective queries to uncover untapped opportunities in your industry
 
