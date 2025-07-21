@@ -17,6 +17,9 @@ showTags: false
 
 ## Introduction to Vibe Coding
 
+![sstable](vibe-coding.jpg#light)
+![sstable](vibe-coding.jpg#dark)
+
 Imagine you have a groundbreaking product idea—you can see every detail, and you just know it'll disrupt the market. Then reality hits. You get bogged down by Jira tickets, sprint planning, developer timelines ("this will take two months"), and designers juggling other projects. By the time your concept, riddled with compromises, turns into a clickable prototype for testing, you’ve almost forgotten why you believed in it.
 
 Now, you can cut this process down from weeks to mere hours.
@@ -71,7 +74,6 @@ If you’re reviewing, testing, and understanding the logic behind AI-generated 
 
 That said, Vibe Coding has its place. While it may not be suitable for large-scale software development, it's ideal for certain tasks, such as validating ideas and developing simple prototypes. Knowing how to use it effectively is key.
 
-To further clarify, check out the [Vibe Coding vs LLM Development Cheat Sheet (PDF)](https://podbiratel.gumroad.com/l/vibe-coding-vs-llm).
 
 ---
 
@@ -106,7 +108,6 @@ Starts at $20/month with a free plan offering basic functionality.
 If Bolt is a playground for prototyping, Cursor is the professional option. This intelligent IDE (Integrated Development Environment) supports robust software projects and understands your entire codebase.
 
 - More info: [Cursor: Official Site](https://www.cursor.so/)
-- Review: [480 hours with Cursor (YouTube, Russian)](https://www.youtube.com/watch?v=uDJUwls-Gpw&ab_channel=EgorMalkevich)
 - Tutorial: [Cursor AI Tutorial for Beginners](https://www.youtube.com/watch?v=3289vhOUdKA&ab_channel=VoloBuilds)
 
 #### Key Features:
@@ -194,10 +195,8 @@ By understanding its strengths and weaknesses, and by tapping into expert guides
 **External Resources & Further Reading:**
 
 - [Simon Willison’s Weblog: Not all AI-assisted programming is vibe coding (but vibe coding rocks)](https://simonwillison.net/2025/Mar/19/vibe-coding/)
-- [Vibe Coding: The Illustrated Guide (vas3k)](https://vas3k.blog/notes/vibe_coding/)
 - [Addy Osmani on Substack: Vibe Coding is not an excuse for low-quality work](https://addyo.substack.com/p/vibe-coding-is-not-an-excuse-for)
 - [Lovable Documentation](https://docs.lovable.dev/introduction/getting-started)
-- [Vibe Coding vs LLM Development Cheat Sheet on Gumroad (PDF)](https://podbiratel.gumroad.com/l/vibe-coding-vs-llm)
 - [Bolt AI Website Builder Guide and Tutorials (No Code MBA)](https://www.nocode.mba/articles/bolt-ai-website)
 
 Explore, prototype, and experiment—but vibe responsibly.
